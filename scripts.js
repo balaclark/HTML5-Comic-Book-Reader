@@ -5,50 +5,70 @@ window.onload = function() {
 
 	book = new ComicBook();
 	
-	var srcs = [
-		"http://dev.justforcomics.com/get/image/?f=comics/extracted/oni_whiteout_melt_1/00.jpg",
-		"http://dev.justforcomics.com/get/image/?f=comics/extracted/oni_whiteout_melt_1/01.jpg",
-		"http://dev.justforcomics.com/get/image/?f=comics/extracted/oni_whiteout_melt_1/02.jpg",
-		"http://dev.justforcomics.com/get/image/?f=comics/extracted/oni_whiteout_melt_1/03.jpg",
-		"http://dev.justforcomics.com/get/image/?f=comics/extracted/oni_whiteout_melt_1/04.jpg",
-		"http://dev.justforcomics.com/get/image/?f=comics/extracted/oni_whiteout_melt_1/05.jpg",
-		"http://dev.justforcomics.com/get/image/?f=comics/extracted/oni_whiteout_melt_1/06.jpg",
-		"http://dev.justforcomics.com/get/image/?f=comics/extracted/oni_whiteout_melt_1/07.jpg"
-	];
+	var srcs = {
+		1: "http://dev.justforcomics.com/get/image/?f=comics/extracted/oni_whiteout_melt_1/00.jpg",
+		2: "http://dev.justforcomics.com/get/image/?f=comics/extracted/oni_whiteout_melt_1/01.jpg",
+		3: "http://dev.justforcomics.com/get/image/?f=comics/extracted/oni_whiteout_melt_1/02.jpg",
+		4: "http://dev.justforcomics.com/get/image/?f=comics/extracted/oni_whiteout_melt_1/03.jpg",
+		5: "http://dev.justforcomics.com/get/image/?f=comics/extracted/oni_whiteout_melt_1/04.jpg",
+		6: "http://dev.justforcomics.com/get/image/?f=comics/extracted/oni_whiteout_melt_1/05.jpg",
+		7: "http://dev.justforcomics.com/get/image/?f=comics/extracted/oni_whiteout_melt_1/06.jpg",
+		8: "http://dev.justforcomics.com/get/image/?f=comics/extracted/oni_whiteout_melt_1/07.jpg"
+	};
 
 	book.draw("comic", srcs);
 }
 
 function ComicBook() {
 
+	var srcs = [];
 	var pages = [];
 	var canvas;
 	var context;
-
-	var buffer = 10;
+	
+	var buffer = 4;
 	var pointer = 0;
 
-	console.log("init");
-
-	this.draw = function(elm, srcs) {
+	/* 
+	 * @param {String} id The canvas ID to draw the comic on.
+	 * @param {Array} srcs An array of all the comic page srcs, in order
+	 */
+	this.draw = function(id, srcs) {
 
 		// setup canvas
-		canvas = document.getElementById(elm);
+		canvas = document.getElementById(id);
 		context = canvas.getContext("2d");
-
-		// set full width
-		//canvas.width = document.body.clientWidth;
-
+		
 		preload(srcs);
 	}
 	
-	this.drawPage = function() { drawPage(); }
+	function preload(srcs) {
+
+		var loaded = 0;
+
+		if (srcs.length < buffer) buffer = srcs.length; // don't get stuck if the buffer level is higher than the number of pages
+
+		for (i in srcs) {
+		
+			var page = new Image();
+
+			page.src = srcs[i];
+			
+			page.onload = function() {
+				pages[loaded] = this; loaded++;
+				if (loaded == buffer) drawPage();
+			}
+		};
+	}
 
 	/**
 	 * TODO: break this down into drawSinglePage() & drawDoublePage()
+	 * TODO: if the current browser doesn't have canvas support, use img tags
 	 */
 	function drawPage() {
-	
+
+		console.log(pointer, pages);
+
 		var page = pages[pointer];
 		
 		canvas.width = page.width;
@@ -56,22 +76,13 @@ function ComicBook() {
 		context.drawImage(page, 0, 0);
 	}
 	
-	function preload(srcs) {
-	
-		var loaded = 0;
+	this.drawNextPage = function() {
+		if (pointer < pointer + 1) pointer++;
+		drawPage();
+	}
 
-		if (srcs.length < buffer) buffer = srcs.length; // don't get stuck if the buffer level is higher than the number of pages
-
-		srcs.forEach(function(src){
-
-			var page = new Image();
-
-			page.src = src;
-			
-			page.onload = function() {
-				pages[loaded] = this; loaded++;
-				if (loaded == buffer) drawPage();
-			}
-		});
+	this.drawPrevPage = function() {
+		if (pointer > 0) pointer--;
+		drawPage();
 	}
 }
