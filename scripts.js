@@ -3,20 +3,19 @@ var book;
 
 window.onload = function() {
 
-	var srcs = {
-		0: "http://dev.justforcomics.com/get/image/?f=comics/extracted/oni_whiteout_melt_1/00.jpg",
-		1: "http://dev.justforcomics.com/get/image/?f=comics/extracted/oni_whiteout_melt_1/01.jpg",
-		2: "http://dev.justforcomics.com/get/image/?f=comics/extracted/oni_whiteout_melt_1/02.jpg",
-		3: "http://dev.justforcomics.com/get/image/?f=comics/extracted/oni_whiteout_melt_1/03.jpg",
-		4: "http://dev.justforcomics.com/get/image/?f=comics/extracted/oni_whiteout_melt_1/04.jpg",
-		5: "http://dev.justforcomics.com/get/image/?f=comics/extracted/oni_whiteout_melt_1/05.jpg",
-		6: "http://dev.justforcomics.com/get/image/?f=comics/extracted/oni_whiteout_melt_1/06.jpg",
-		7: "http://dev.justforcomics.com/get/image/?f=comics/extracted/oni_whiteout_melt_1/07.jpg"
-	};
+	var pages = [
+		"http://dev.justforcomics.com/get/image/?f=comics/extracted/oni_whiteout_melt_1/00.jpg",
+		"http://dev.justforcomics.com/get/image/?f=comics/extracted/oni_whiteout_melt_1/01.jpg",
+		"http://dev.justforcomics.com/get/image/?f=comics/extracted/oni_whiteout_melt_1/02.jpg",
+		"http://dev.justforcomics.com/get/image/?f=comics/extracted/oni_whiteout_melt_1/03.jpg",
+		"http://dev.justforcomics.com/get/image/?f=comics/extracted/oni_whiteout_melt_1/04.jpg",
+		"http://dev.justforcomics.com/get/image/?f=comics/extracted/oni_whiteout_melt_1/05.jpg",
+		"http://dev.justforcomics.com/get/image/?f=comics/extracted/oni_whiteout_melt_1/06.jpg",
+		"http://dev.justforcomics.com/get/image/?f=comics/extracted/oni_whiteout_melt_1/07.jpg"
+	];
 
 	book = new ComicBook();
-
-	book.draw("comic", srcs);
+	book.draw("comic", pages);
 }
 
 function ComicBook() {
@@ -58,17 +57,18 @@ function ComicBook() {
 
 		if (srcs.length < buffer) buffer = srcs.length; // don't get stuck if the buffer level is higher than the number of pages
 
-		for (i in srcs) {
-		
+		srcs.forEach(function(src, i) {
+
 			var page = new Image();
 			
-			page.src = srcs[i];
+			page.src = src;
 			
 			page.onload = function() {
-				pages[loaded] = this; loaded++;
+				
+				pages[i] = this; loaded++;
 				if (loaded == buffer) drawPage();
 			}
-		};
+		});
 	}
 
 	/**
@@ -80,7 +80,7 @@ function ComicBook() {
 	function drawPage() {
 
 		var page = pages[pointer];
-
+		
 		if (typeof page != "object") throw "invalid page type";
 
 		canvas.width = page.width;
@@ -99,7 +99,6 @@ function ComicBook() {
 			drawPage();
 		}
 	}
-
 
 	/**
 	 * Decrement the counter and draw the page in the canvas
