@@ -4,14 +4,14 @@ var book;
 window.onload = function() {
 
 	var srcs = {
-		1: "http://dev.justforcomics.com/get/image/?f=comics/extracted/oni_whiteout_melt_1/00.jpg",
-		2: "http://dev.justforcomics.com/get/image/?f=comics/extracted/oni_whiteout_melt_1/01.jpg",
-		3: "http://dev.justforcomics.com/get/image/?f=comics/extracted/oni_whiteout_melt_1/02.jpg",
-		4: "http://dev.justforcomics.com/get/image/?f=comics/extracted/oni_whiteout_melt_1/03.jpg",
-		5: "http://dev.justforcomics.com/get/image/?f=comics/extracted/oni_whiteout_melt_1/04.jpg",
-		6: "http://dev.justforcomics.com/get/image/?f=comics/extracted/oni_whiteout_melt_1/05.jpg",
-		7: "http://dev.justforcomics.com/get/image/?f=comics/extracted/oni_whiteout_melt_1/06.jpg",
-		8: "http://dev.justforcomics.com/get/image/?f=comics/extracted/oni_whiteout_melt_1/07.jpg"
+		0: "http://dev.justforcomics.com/get/image/?f=comics/extracted/oni_whiteout_melt_1/00.jpg",
+		1: "http://dev.justforcomics.com/get/image/?f=comics/extracted/oni_whiteout_melt_1/01.jpg",
+		2: "http://dev.justforcomics.com/get/image/?f=comics/extracted/oni_whiteout_melt_1/02.jpg",
+		3: "http://dev.justforcomics.com/get/image/?f=comics/extracted/oni_whiteout_melt_1/03.jpg",
+		4: "http://dev.justforcomics.com/get/image/?f=comics/extracted/oni_whiteout_melt_1/04.jpg",
+		5: "http://dev.justforcomics.com/get/image/?f=comics/extracted/oni_whiteout_melt_1/05.jpg",
+		6: "http://dev.justforcomics.com/get/image/?f=comics/extracted/oni_whiteout_melt_1/06.jpg",
+		7: "http://dev.justforcomics.com/get/image/?f=comics/extracted/oni_whiteout_melt_1/07.jpg"
 	};
 
 	book = new ComicBook();
@@ -80,7 +80,9 @@ function ComicBook() {
 	function drawPage() {
 
 		var page = pages[pointer];
-		
+
+		if (typeof page != "object") throw "invalid page type";
+
 		canvas.width = page.width;
 		canvas.height = page.height;
 		context.drawImage(page, 0, 0);
@@ -92,7 +94,7 @@ function ComicBook() {
 	 * @see #drawPage
 	 */
 	function drawNextPage() {
-		if (pointer < pointer + 1) {
+		if (pointer + 1 < pages.length) {
 			pointer++;
 			drawPage();
 		}
