@@ -30,7 +30,7 @@ function ComicBook() {
 	
 	var scale = 1;
 	var displayMode = "double" // single / double
-	var zoomMode = "manual"; // manual / fitWidth / fitHeight
+	var zoomMode = "fitWidth"; // manual / fitWidth
 
 	/* 
 	 * @param {String} id The canvas ID to draw the comic on.
@@ -143,8 +143,12 @@ function ComicBook() {
 
 		// draw the page
 		if (zoomMode == "manual") {
-			context.drawImage(page, 0, 0, page.width, page.height);
-			if (displayMode == "double" && typeof page2 == "object") context.drawImage(page2, page.width, 0, page2.width, page2.height);
+
+			var page_width = page.width * scale
+			var page_height = page.height * scale;
+
+			context.drawImage(page, 0, 0, page_width, page_height);
+			if (displayMode == "double" && typeof page2 == "object") context.drawImage(page2, page_width, 0, page_width, page_height);
 		}
 		// draw page with scaled dimensions in dynamic display modes
 		else {
