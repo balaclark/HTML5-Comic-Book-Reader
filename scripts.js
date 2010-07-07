@@ -93,8 +93,6 @@ function ComicBook() {
 	 */
 	function drawPage() {
 
-		console.log(scale, displayMode, zoomMode);
-
 		var zoom_scale;
 		var page = pages[pointer];
 		var page2 = pages[pointer + 1];
