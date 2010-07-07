@@ -15,12 +15,11 @@ window.onload = function() {
 
 	var options = {
 		displayMode: "double",
-		zoomMode: "manual"
+		zoomMode: "fitWidth"
 	}
 
 	book = new ComicBook("comic", pages, options);
 	book.draw();
-	book.zoom(.5);
 }
 
 window.onresize = function() {
@@ -75,7 +74,7 @@ function ComicBook(id, srcs, opts) {
 	ComicBook.prototype.zoom = function(new_scale) {
 		options.zoomMode = "manual";
 		scale = new_scale;
-		this.drawPage();
+		if (typeof pages[pointer] == "object") this.drawPage();
 	}
 	
 	/**
@@ -110,11 +109,12 @@ function ComicBook(id, srcs, opts) {
 	ComicBook.prototype.drawPage = function() {
 	
 		var zoom_scale;
+		var offsetW = 0;
 		var page = pages[pointer];
 		var page2 = pages[pointer + 1];
 
-		if (typeof page != "object") throw "invalid page";
-
+		if (typeof page != "object") throw "invalid page type '"+ typeof page +"'";
+		
 		var width = page.width;
 		
 		if (options.displayMode == "double") {
@@ -152,9 +152,15 @@ function ComicBook(id, srcs, opts) {
 		canvas.width = (canvas_width < window.innerWidth) ? window.innerWidth : canvas_width;
 		canvas.height = (canvas_height < window.innerHeight) ? window.innerHeight : canvas_height;
 		
+		// work out a horizonal position that will keep the pages always centred
+		if (canvas_width < window.innerWidth && options.zoomMode == "manual") {
+			offsetW = (window.innerWidth - page_width) / 2;
+			if (options.displayMode == "double") offsetW = offsetW - page_width / 2;
+		}
+		
 		// draw the page(s)
-		context.drawImage(page, 0, 0, page_width, page_height);
-		if (options.displayMode == "double" && typeof page2 == "object") context.drawImage(page2, page_width, 0, page_width, page_height);
+		context.drawImage(page, offsetW, 0, page_width, page_height);
+		if (options.displayMode == "double" && typeof page2 == "object") context.drawImage(page2, page_width + offsetW, 0, page_width, page_height);
 		
 	}
 
