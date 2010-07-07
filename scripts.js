@@ -28,6 +28,11 @@ function ComicBook() {
 	var buffer = 4;
 	var pointer = 0;
 	var loaded = 0;
+
+	var canvas_width;
+	var canvas_height;
+
+	var scale = 1;
 	
 	/* 
 	 * @param {String} id The canvas ID to draw the comic on.
@@ -44,9 +49,19 @@ function ComicBook() {
 		preload(srcs);
 		
 		// add page controls
-		canvas.addEventListener("click", comicOnClick, false);
+		canvas.addEventListener("click", navigation, false);
 	}
 
+	/*
+	 * Zoom the canvas
+	 * 
+	 * @param new_scale {Number} Scale the canvas to this ratio
+	 */
+	this.zoom = function(new_scale) {
+		scale = new_scale;
+		drawPage();
+	}
+	
 	/**
 	 * Preload all images, draw the page only after a given number have been loaded.
 	 *
@@ -83,9 +98,13 @@ function ComicBook() {
 		
 		if (typeof page != "object") throw "invalid page type";
 
-		canvas.width = page.width;
-		canvas.height = page.height;
-		context.drawImage(page, 0, 0);
+		width = page.width * scale;
+		height = page.height * scale;
+
+		canvas.width = width;
+		canvas.height = height;
+		
+		context.drawImage(page, 0, 0, width, height);
 	}
 
 	/**
@@ -112,10 +131,18 @@ function ComicBook() {
 		}
 	}
 
-	function comicOnClick(e) {
-		switch (getCursorPosition(e)) {
-			case "left": drawPrevPage(); break;
-			case "right": drawNextPage(); break;
+	function navigation(e) {
+
+		switch (e.type) {
+
+			case "click":
+				switch (getCursorPosition(e)) {
+					case "left": drawPrevPage(); break;
+					case "right": drawNextPage(); break;
+				}
+				break;
+			
+			defualt: console.log(e.type);
 		}
 	}
 
