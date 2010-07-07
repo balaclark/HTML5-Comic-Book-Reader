@@ -127,34 +127,25 @@ function ComicBook() {
 				zoom_scale =  (window.innerWidth > width)
 					  ? ((window.innerWidth - width) / window.innerWidth) + 1 // scale up if the window is wider than the page
 					  : window.innerWidth / width; // scale down if the window is narrower than the page
-				
 				break;
-
+				
 			default: throw "invalid zoomMode";
 		}
+		
+		var canvas_width  = page.width * zoom_scale;
+		var canvas_height = page.height * zoom_scale;
 
-		// set the page dimensions based on scale
-		width  = page.width * zoom_scale;
-		height = page.height * zoom_scale;
+		var page_width = (zoomMode == "manual") ? page.width * scale : canvas_width;
+		var page_height = (zoomMode == "manual") ? page.height * scale : canvas_height;
 		
 		// make sure the canvas is always at least full screen, even if the page is more narrow than the screen
-		canvas.width = (width < window.innerWidth) ? window.innerWidth : width;
-		canvas.height = (height < window.innerHeight) ? window.innerHeight : height;
+		canvas.width = (canvas_width < window.innerWidth) ? window.innerWidth : canvas_width;
+		canvas.height = (canvas_height < window.innerHeight) ? window.innerHeight : canvas_height;
 
-		// draw the page
-		if (zoomMode == "manual") {
-
-			var page_width = page.width * scale
-			var page_height = page.height * scale;
-
-			context.drawImage(page, 0, 0, page_width, page_height);
-			if (displayMode == "double" && typeof page2 == "object") context.drawImage(page2, page_width, 0, page_width, page_height);
-		}
-		// draw page with scaled dimensions in dynamic display modes
-		else {
-			context.drawImage(page, 0, 0, width, height);
-			if (displayMode == "double" && typeof page2 == "object") context.drawImage(page2, width, 0, width, height);
-		}
+		// draw the page(s)
+		context.drawImage(page, 0, 0, page_width, page_height);
+		if (displayMode == "double" && typeof page2 == "object") context.drawImage(page2, page_width, 0, page_width, page_height);
+		
 	}
 
 	/**
