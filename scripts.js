@@ -15,11 +15,12 @@ window.onload = function() {
 
 	var options = {
 		displayMode: "double",
-		zoomMode: "fitWidth"
+		zoomMode: "manual"
 	}
 
 	book = new ComicBook("comic", pages, options);
 	book.draw();
+	book.zoom(.5);
 }
 
 window.onresize = function() {
@@ -191,8 +192,6 @@ function ComicBook(id, srcs, opts) {
 					case "right": ComicBook.prototype.drawNextPage(); break;
 				}
 				break;
-			
-			defualt: console.log(e.type);
 		}
 	}
 
