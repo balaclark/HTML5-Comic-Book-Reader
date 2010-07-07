@@ -20,6 +20,7 @@ window.onload = function() {
 
 	book = new ComicBook("comic", pages, options);
 	book.draw();
+	book.zoom(.5);
 }
 
 window.onresize = function() {
@@ -109,7 +110,8 @@ function ComicBook(id, srcs, opts) {
 	ComicBook.prototype.drawPage = function() {
 	
 		var zoom_scale;
-		var offsetW = 0;
+		var offsetW = 0, offsetH = 0;
+		
 		var page = pages[pointer];
 		var page2 = pages[pointer + 1];
 
@@ -147,6 +149,8 @@ function ComicBook(id, srcs, opts) {
 
 		var page_width = (options.zoomMode == "manual") ? page.width * scale : canvas_width;
 		var page_height = (options.zoomMode == "manual") ? page.height * scale : canvas_height;
+		
+		canvas_height = page_height;
 		
 		// make sure the canvas is always at least full screen, even if the page is more narrow than the screen
 		canvas.width = (canvas_width < window.innerWidth) ? window.innerWidth : canvas_width;
