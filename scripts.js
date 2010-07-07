@@ -28,12 +28,10 @@ function ComicBook() {
 	var buffer = 4;
 	var pointer = 0;
 	var loaded = 0;
-
-	var canvas_width;
-	var canvas_height;
-
-	var scale = 1;
 	
+	var scale = 1;
+	var zoomMode = "fitWidth"; // manual / fitWidth / fitHeight
+
 	/* 
 	 * @param {String} id The canvas ID to draw the comic on.
 	 * @param {Object} srcs An array of all the comic page srcs, in order
@@ -94,15 +92,25 @@ function ComicBook() {
 	 */
 	function drawPage() {
 
-		var page = pages[pointer];
+		var width, height, page = pages[pointer];
 		
 		if (typeof page != "object") throw "invalid page type";
 
-		width = page.width * scale;
+		// update the page scale if a non manual mode has been chosen
+		switch(zoomMode) {
+			case "fitWidth":
+				scale =  (window.innerWidth > page.width)
+					  ? ((window.innerWidth - page.width) / window.innerWidth) + 1 // scale up if the window is wider than the page
+					  : window.innerWidth / page.width; // scale down if the window is narrower than the page
+				break;
+		}
+		
+		width  = page.width * scale;
 		height = page.height * scale;
 
-		canvas.width = width;
-		canvas.height = height;
+		// make sure the canvas is always at least full screen, even if the page is more narrow than the screen
+		canvas.width = (height < window.innerWidth) ? window.innerWidth : width;
+		canvas.height = (height < window.innerHeight) ? window.innerHeight : height;
 		
 		context.drawImage(page, 0, 0, width, height);
 	}
