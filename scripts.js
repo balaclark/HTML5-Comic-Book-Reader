@@ -1,3 +1,22 @@
+/*
+	TODOs:
+	
+	Fo sho:
+		- Show a progress bar when buffering
+		- use document.body.offsetWidth where present? (instead of window.innerWidth, the former excludes the width of scrollbars)
+		- scroll two pages at a time in double page mode
+		- manga mode
+		- page controls
+		- thumbnail browser
+		- chrome frame
+	
+	Nice 2 have:
+		- remember position (use localStorage)
+		- maybe use local storage for the pages array too? might be easier to implement manga mode with that
+		- offline mode
+		- page turn animation
+	
+*/
 
 var book
 
