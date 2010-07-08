@@ -2,6 +2,7 @@
 	TODOs:
 	
 	Fo sho:
+		- The buffer is actually loading all the images at the same time, only load the next one on page.onload
 		- Show a progress bar when buffering
 		- use document.body.offsetWidth where present? (instead of window.innerWidth, the former excludes the width of scrollbars)
 		- scroll two pages at a time in double page mode
@@ -105,7 +106,7 @@ function ComicBook(id, srcs, opts) {
 	ComicBook.prototype.preload = function(srcs) {
 
 		if (srcs.length < buffer) buffer = srcs.length; // don't get stuck if the buffer level is higher than the number of pages
-
+		
 		srcs.forEach(function(src, i) {
 
 			var page = new Image();
@@ -113,7 +114,7 @@ function ComicBook(id, srcs, opts) {
 			page.src = src;
 			
 			page.onload = function() {
-				pages[i] = this;loaded++;
+				pages[i] = this; loaded++;
 				if (loaded == buffer) ComicBook.prototype.drawPage();
 			}
 		});
