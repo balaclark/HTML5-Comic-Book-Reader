@@ -128,22 +128,37 @@ function ComicBook(id, srcs, opts) {
 
 		if (srcs.length < buffer) { buffer = srcs.length; } // don't get stuck if the buffer level is higher than the number of pages
 
-		function preload(srcs) {
-			
-		}
-		/*
-		srcs.forEach(function(src, i) {
+		var i = 0; // the current page counter for this method
 
+		// I am using recursion instead of a forEach loop so that the next image is
+		// only loaded when the previous one has completely finished
+		function preload(i) {
+		
 			var page = new Image();
-			
-			page.src = src;
-			
+
+			console.info("starting to load: " + srcs[i]);
+
+			page.src = srcs[i];
+
 			page.onload = function () {
-				pages[i] = this; loaded++;
-				if (loaded === buffer) { ComicBook.prototype.drawPage(); }
+
+				console.info("loaded: " + srcs[i]);
+
+				pages[i] = this;
+				loaded += 1;
+
+				// there are still more pages to load, do it
+				if (loaded < srcs.length) {
+					i += 1;
+					preload(i);
+				}
+
+				// start rendering the comic when the buffer level has been reached
+				if (loaded === buffer + 1) { ComicBook.prototype.drawPage(); }
 			};
-		});
-		*/
+		}
+
+		if (i === 0) { preload(i); }
 	};
 
 	/**
