@@ -127,7 +127,11 @@ function ComicBook(id, srcs, opts) {
 	ComicBook.prototype.preload = function (srcs) {
 
 		if (srcs.length < buffer) { buffer = srcs.length; } // don't get stuck if the buffer level is higher than the number of pages
-		
+
+		function preload(srcs) {
+			
+		}
+		/*
 		srcs.forEach(function(src, i) {
 
 			var page = new Image();
@@ -139,6 +143,7 @@ function ComicBook(id, srcs, opts) {
 				if (loaded == buffer) { ComicBook.prototype.drawPage(); }
 			};
 		});
+		*/
 	};
 
 	/**
