@@ -136,13 +136,13 @@ function ComicBook(id, srcs, opts) {
 		
 			var page = new Image();
 
-			console.info("starting to load: " + srcs[i]);
+			// console.log("starting to load: " + srcs[i]);
 
 			page.src = srcs[i];
 
 			page.onload = function () {
 
-				console.info("loaded: " + srcs[i]);
+				// console.info("loaded: " + srcs[i]);
 
 				pages[i] = this;
 				loaded += 1;
@@ -155,6 +155,7 @@ function ComicBook(id, srcs, opts) {
 
 				// start rendering the comic when the buffer level has been reached
 				if (loaded === buffer + 1) { ComicBook.prototype.drawPage(); }
+				if (loaded === srcs.length) { /* console.log("all loaded"); */ }
 			};
 		}
 
