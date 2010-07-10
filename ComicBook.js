@@ -131,7 +131,7 @@ function ComicBook(id, srcs, opts) {
 
 		var i = 0; // the current page counter for this method
 		
-		$(canvas).before('<div id="status"><p></p></div>');
+		$(canvas).after('<div id="status"><p></p></div>');
 		
 		// I am using recursion instead of a forEach loop so that the next image is
 		// only loaded when the previous one has completely finished
@@ -158,7 +158,7 @@ function ComicBook(id, srcs, opts) {
 
 				// start rendering the comic when the buffer level has been reached
 				if (loaded === buffer) { ComicBook.prototype.drawPage(); }
-				if (loaded === no_pages) { $("#status").remove(); }
+				if (loaded === no_pages) { $("#status").fadeOut(150).remove(); }
 			};
 		}
 		

@@ -1,5 +1,17 @@
 body {
+	font-size: 12px;
+}
+
+#status {
 	background-color: #000;
 	color: #fff;
-	font-size: 12px;
+	position: fixed;
+	top: 0;
+	right: 0;
+	background-color: #111;
+	margin: 5px;
+	padding: 8px;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
 }
