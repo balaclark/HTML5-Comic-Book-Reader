@@ -6,7 +6,6 @@
 		- Show a progress bar when buffering
 		- use document.body.offsetWidth where present? (instead of window.innerWidth, the former excludes the width of scrollbars)
 		- scroll two pages at a time in double page mode
-		- manga mode
 		- page controls
 		- thumbnail browser
 		- chrome frame
@@ -49,7 +48,8 @@ function ComicBook(id, srcs, opts) {
 
 	var defaults = {
 		displayMode: "double",	// single / double
-		zoomMode: "fitWidth"	// manual / fitWidth
+		zoomMode: "fitWidth",	// manual / fitWidth
+		manga: false
 	};
 	
 	var options = merge(defaults, opts); // options array for internal use
@@ -226,10 +226,17 @@ function ComicBook(id, srcs, opts) {
 			offsetH = (window.innerHeight - page_height) / 2;
 		}
 		
+		// in manga double page mode reverse the pages
+		if (options.manga && options.displayMode === "double") { 
+			var tmpPage = page;
+			var tmpPage2 = page2; // FIXME: check this exists before using
+			page = tmpPage2;
+			page2 = tmpPage;
+		}
+		
 		// draw the page(s)
 		context.drawImage(page, offsetW, offsetH, page_width, page_height);
 		if (options.displayMode === "double" && typeof page2 === "object") { context.drawImage(page2, page_width + offsetW, offsetH, page_width, page_height); }
-		
 	};
 
 	/**
@@ -260,11 +267,19 @@ function ComicBook(id, srcs, opts) {
 
 		if (e.type === "click") {
 			
-			window.scroll(0,0);
+			var side = getCursorPosition(e);
 			
-			switch (getCursorPosition(e)) {
-				case "left": ComicBook.prototype.drawPrevPage(); break;
-				case "right": ComicBook.prototype.drawNextPage(); break;
+			window.scroll(0,0); 
+			
+			// western style (left to right)
+			if (!options.manga) {
+				if (side === "left") { ComicBook.prototype.drawPrevPage(); }
+				if (side === "right") { ComicBook.prototype.drawNextPage(); }
+			} 
+			// manga style (right to left)
+			else {
+				if (side === "left") { ComicBook.prototype.drawNextPage(); }
+				if (side === "right") { ComicBook.prototype.drawPrevPage(); }
 			}
 		}
 	};
@@ -286,7 +301,8 @@ window.onload = function() {
 
 	var options = {
 		displayMode: "double",
-		zoomMode: "fitWidth"
+		zoomMode: "fitWidth",
+		manga: false
 	};
 
 	book = new ComicBook("comic", pages, options);
