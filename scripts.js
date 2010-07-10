@@ -223,6 +223,10 @@ function ComicBook(id, srcs, opts) {
 		canvas.width = (canvas_width < window.innerWidth) ? window.innerWidth : canvas_width;
 		canvas.height = (canvas_height < window.innerHeight) ? window.innerHeight : canvas_height;
 		
+		// disable scrollbars if not needed
+		document.body.style.overflowX = (canvas_width < window.innerWidth) ? "hidden" : "auto";
+		document.body.style.overflowY = (canvas_height < window.innerHeight) ? "hidden" : "auto";
+		
 		// work out a horizonal position that will keep the pages always centred
 		if (canvas_width < window.innerWidth && options.zoomMode === "manual") {
 			offsetW = (window.innerWidth - page_width) / 2;
