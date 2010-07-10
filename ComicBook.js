@@ -1,4 +1,5 @@
-/*jslint on: true, eqeqeq: true */
+/*jslint browser: true, on: true, eqeqeq: true, plusplus: true, newcap: true, immed: true */
+
 /*
 	TODOs:
 	
@@ -17,7 +18,6 @@
 		- page turn animation
 	
 */
-
 
 
 /**
@@ -159,7 +159,8 @@ function ComicBook(id, srcs, opts) {
 				if (loaded === srcs.length) { /* console.log("all loaded"); */ }
 			};
 		}
-
+		
+		// manually trigger the first load
 		if (i === 0) { preload(i); }
 	};
 
@@ -198,12 +199,12 @@ function ComicBook(id, srcs, opts) {
 		switch(options.zoomMode) {
 
 			case "manual":
-				document.body.style.overflowX = "auto"
+				document.body.style.overflowX = "auto";
 				zoom_scale = (options.displayMode === "double") ? scale * 2 : scale;
 				break;
 				
 			case "fitWidth":
-				document.body.style.overflowX = "hidden"
+				document.body.style.overflowX = "hidden";
 				zoom_scale =  (window.innerWidth > width) ? ((window.innerWidth - width) / window.innerWidth) + 1 // scale up if the window is wider than the page
 					  : window.innerWidth / width; // scale down if the window is narrower than the page
 				break;
@@ -258,7 +259,7 @@ function ComicBook(id, srcs, opts) {
 	 */
 	ComicBook.prototype.drawNextPage = function () {
 		if (pointer + 1 < pages.length) {
-			pointer++;
+			pointer += 1;
 			this.drawPage();
 		}
 	};
@@ -270,7 +271,7 @@ function ComicBook(id, srcs, opts) {
 	 */
 	ComicBook.prototype.drawPrevPage = function () {
 		if (pointer > 0) {
-			pointer--;
+			pointer -= 1;
 			this.drawPage();
 		}
 	};
