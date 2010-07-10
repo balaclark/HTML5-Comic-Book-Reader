@@ -5,7 +5,6 @@
 	
 	Fo sho:
 		- Show a progress bar when buffering
-		- scroll two pages at a time in double page mode
 		- page controls
 		- thumbnail browser
 		- chrome frame
@@ -259,7 +258,7 @@ function ComicBook(id, srcs, opts) {
 	 */
 	ComicBook.prototype.drawNextPage = function () {
 		if (pointer + 1 < pages.length) {
-			pointer += 1;
+			pointer += (options.displayMode === "single") ? 1 : 2;
 			this.drawPage();
 		}
 	};
@@ -271,7 +270,7 @@ function ComicBook(id, srcs, opts) {
 	 */
 	ComicBook.prototype.drawPrevPage = function () {
 		if (pointer > 0) {
-			pointer -= 1;
+			pointer -= (options.displayMode === "single") ? 1 : 2;
 			this.drawPage();
 		}
 	};
