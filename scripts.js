@@ -18,6 +18,8 @@
 	
 */
 
+
+
 /**
  * Merge two arrays. Any properties in b will replace the same properties in
  * a. New properties from b will be added to a.
@@ -63,7 +65,7 @@ function ComicBook(id, srcs, opts) {
 	var loaded = 0;		// the amount of images that have been loaded so far
 	
 	var scale = 1;		// page zoom scale, 1 = 100%
-
+	
 	/**
 	 * Figure out the cursor position relative to the canvas.
 	 *
@@ -192,10 +194,12 @@ function ComicBook(id, srcs, opts) {
 		switch(options.zoomMode) {
 
 			case "manual":
+				document.body.style.overflowX = "auto"
 				zoom_scale = (options.displayMode === "double") ? scale * 2 : scale;
 				break;
 				
 			case "fitWidth":
+				document.body.style.overflowX = "hidden"
 				zoom_scale =  (window.innerWidth > width) ? ((window.innerWidth - width) / window.innerWidth) + 1 // scale up if the window is wider than the page
 					  : window.innerWidth / width; // scale down if the window is narrower than the page
 				break;
