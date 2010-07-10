@@ -181,6 +181,10 @@ function ComicBook(id, srcs, opts) {
 		
 		var width = page.width;
 		
+		// reset the canvas to stop duplicate pages showing
+		canvas.width = 0;
+		canvas.height = 0;
+		
 		if (options.displayMode === "double") {
 
 			// for double page spreads, factor in the width of both pages
