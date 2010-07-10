@@ -54,7 +54,8 @@ function ComicBook(id, srcs, opts) {
 	};
 	
 	var options = merge(defaults, opts); // options array for internal use
-
+	
+	var no_pages = srcs.length;
 	var pages = [];		// array of preloaded Image objects
 	var canvas;			// the HTML5 canvas object
 	var context;		// the 2d drawing context
@@ -100,7 +101,7 @@ function ComicBook(id, srcs, opts) {
 		context = canvas.getContext("2d");
 
 		// preload images if needed
-		if (pages.length !== this.srcs.length) { this.preload(this.srcs); }
+		if (pages.length !== no_pages) { this.preload(this.srcs); }
 		else { this.drawPage(); }
 
 		// add page controls
@@ -126,17 +127,19 @@ function ComicBook(id, srcs, opts) {
 	 */
 	ComicBook.prototype.preload = function (srcs) {
 
-		if (srcs.length < buffer) { buffer = srcs.length; } // don't get stuck if the buffer level is higher than the number of pages
+		if (no_pages < buffer) { buffer = no_pages; } // don't get stuck if the buffer level is higher than the number of pages
 
 		var i = 0; // the current page counter for this method
-
+		
+		$(canvas).before('<div id="status"><p></p></div>');
+		
 		// I am using recursion instead of a forEach loop so that the next image is
 		// only loaded when the previous one has completely finished
 		function preload(i) {
 		
 			var page = new Image();
-
-			// console.log("starting to load: " + srcs[i]);
+		
+			$("#status p").text("loading page " + (i + 1) + " of " + no_pages);
 
 			page.src = srcs[i];
 
@@ -148,14 +151,14 @@ function ComicBook(id, srcs, opts) {
 				loaded += 1;
 
 				// there are still more pages to load, do it
-				if (loaded < srcs.length) {
+				if (loaded < no_pages) {
 					i += 1;
 					preload(i);
 				}
 
 				// start rendering the comic when the buffer level has been reached
-				if (loaded === buffer + 1) { ComicBook.prototype.drawPage(); }
-				if (loaded === srcs.length) { /* console.log("all loaded"); */ }
+				if (loaded === buffer) { ComicBook.prototype.drawPage(); }
+				if (loaded === no_pages) { $("#status").remove(); }
 			};
 		}
 		
@@ -299,7 +302,7 @@ function ComicBook(id, srcs, opts) {
 
 var book;
 
-window.onload = function() {
+$(document).ready(function() {
 
 	var pages = [
 		"http://dev.justforcomics.com/get/image/?f=comics/extracted/oni_whiteout_melt_1/00.jpg",
@@ -308,7 +311,6 @@ window.onload = function() {
 		"http://dev.justforcomics.com/get/image/?f=comics/extracted/oni_whiteout_melt_1/03.jpg",
 		"http://dev.justforcomics.com/get/image/?f=comics/extracted/oni_whiteout_melt_1/04.jpg",
 		"http://dev.justforcomics.com/get/image/?f=comics/extracted/oni_whiteout_melt_1/05.jpg",
-		"http://dev.justforcomics.com/get/image/?f=comics/extracted/oni_whiteout_melt_1/06.jpg",
 		"http://dev.justforcomics.com/get/image/?f=comics/extracted/oni_whiteout_melt_1/06.jpg",
 		"http://dev.justforcomics.com/get/image/?f=comics/extracted/oni_whiteout_melt_1/07.jpg",
 		"http://dev.justforcomics.com/get/image/?f=comics/extracted/oni_whiteout_melt_1/08.jpg",
@@ -339,8 +341,8 @@ window.onload = function() {
 
 	book = new ComicBook("comic", pages, options);
 	book.draw();
-};
+});
 
-window.onresize = function() {
+$(window).resize(function() {
 	book.draw();
-};
+});
