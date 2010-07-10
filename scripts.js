@@ -3,7 +3,6 @@
 	TODOs:
 	
 	Fo sho:
-		- The buffer is actually loading all the images at the same time, only load the next one on page.onload
 		- Show a progress bar when buffering
 		- use document.body.offsetWidth where present? (instead of window.innerWidth, the former excludes the width of scrollbars)
 		- scroll two pages at a time in double page mode
@@ -260,6 +259,9 @@ function ComicBook(id, srcs, opts) {
 	ComicBook.prototype.navigation = function (e) {
 
 		if (e.type === "click") {
+			
+			window.scroll(0,0);
+			
 			switch (getCursorPosition(e)) {
 				case "left": ComicBook.prototype.drawPrevPage(); break;
 				case "right": ComicBook.prototype.drawNextPage(); break;
