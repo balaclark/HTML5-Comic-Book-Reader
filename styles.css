@@ -3,15 +3,19 @@ body {
 }
 
 #status {
-	background-color: #000;
-	color: #fff;
 	position: fixed;
 	top: 0;
 	right: 0;
+}
+
+.control {
+	background-color: #000;
+	color: #fff;
 	background-color: #111;
 	margin: 5px;
 	padding: 8px;
 	-webkit-border-radius: 4px;
 	-moz-border-radius: 4px;
 	border-radius: 4px;
+	opacity: .9;
 }

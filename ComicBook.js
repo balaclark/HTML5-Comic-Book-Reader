@@ -4,10 +4,9 @@
 	TODOs:
 	
 	Fo sho:
-		- Show a progress bar when buffering
 		- page controls
 		- thumbnail browser
-		- chrome frame
+		- chrome frame / ExplorerCanvas
 	
 	Nice 2 have:
 		- support older browsers by using img tags instead of canvas
@@ -131,7 +130,7 @@ function ComicBook(id, srcs, opts) {
 
 		var i = 0; // the current page counter for this method
 		
-		$(canvas).after('<div id="status"><p></p></div>');
+		$(canvas).after('<div class="control" id="status"><p></p></div>');
 		
 		// I am using recursion instead of a forEach loop so that the next image is
 		// only loaded when the previous one has completely finished
