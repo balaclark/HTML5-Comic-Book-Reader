@@ -5,18 +5,14 @@
 	
 	Fo sho:
 		- page controls
-		- thumbnail browser
 		- chrome frame / ExplorerCanvas
 	
 	Nice 2 have:
-		- support older browsers by using img tags instead of canvas
 		- remember position (use localStorage)
-		- maybe use local storage for the pages array too? might be easier to implement manga mode with that
-		- offline mode
-		- page turn animation
-	
+		- thumbnail browser
+		- image enhancements (http://www.pixastic.com/lib/docs/actions/sharpen/)
+		- page turn animation (http://www.cynergysystems.com/blogs/page/rickbarraza?entry=the_secret_behind_the_page)
 */
-
 
 /**
  * Merge two arrays. Any properties in b will replace the same properties in
@@ -49,7 +45,7 @@ function ComicBook(id, srcs, opts) {
 	var defaults = {
 		displayMode: "double",	// single / double
 		zoomMode: "fitWidth",	// manual / fitWidth
-		manga: false
+		manga: false			// true / false
 	};
 	
 	var options = merge(defaults, opts); // options array for internal use
@@ -252,7 +248,7 @@ function ComicBook(id, srcs, opts) {
 		context.drawImage(page, offsetW, offsetH, page_width, page_height);
 		if (options.displayMode === "double" && typeof page2 === "object") { context.drawImage(page2, page_width + offsetW, offsetH, page_width, page_height); }
 	};
-
+	
 	/**
 	 * Increment the counter and draw the page in the canvas
 	 * 
@@ -264,7 +260,7 @@ function ComicBook(id, srcs, opts) {
 			this.drawPage();
 		}
 	};
-
+	
 	/**
 	 * Decrement the counter and draw the page in the canvas
 	 *
@@ -283,7 +279,7 @@ function ComicBook(id, srcs, opts) {
 			
 			var side = getCursorPosition(e);
 			
-			window.scroll(0,0); 
+			window.scroll(0,0); // make sure the top of the page is in view
 			
 			// western style (left to right)
 			if (!options.manga) {
