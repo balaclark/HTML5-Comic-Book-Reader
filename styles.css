@@ -19,3 +19,12 @@ body {
 	border-radius: 4px;
 	opacity: .9;
 }
+
+.ui-draggable {
+	cursor: move;
+}
+
+#color {
+	width: 200px;
+	height: 150px;
+}
