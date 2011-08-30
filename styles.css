@@ -2,12 +2,6 @@ body {
 	font-size: 12px;
 }
 
-#status {
-	position: fixed;
-	top: 0;
-	right: 0;
-}
-
 .control {
 	color: #fff;
 	background-color: #111;
@@ -54,4 +48,9 @@ body {
 #color {
 	width: 200px;
 	height: 150px;
+}
+
+#status {
+	top: 0;
+	right: 0;
 }
