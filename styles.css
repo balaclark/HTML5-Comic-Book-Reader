@@ -19,6 +19,7 @@ body {
 
 .control.navigate {
 	top: 0;
+	margin: 0;
 	cursor: pointer;
 	width: 128px;
 	background: center no-repeat;
