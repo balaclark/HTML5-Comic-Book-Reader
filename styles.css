@@ -9,15 +9,41 @@ body {
 }
 
 .control {
-	background-color: #000;
 	color: #fff;
 	background-color: #111;
 	margin: 5px;
 	padding: 8px;
+	opacity: .9;
+}
+
+.control.floating {
 	-webkit-border-radius: 4px;
 	-moz-border-radius: 4px;
 	border-radius: 4px;
-	opacity: .9;
+}
+
+.control.navigate {
+	position: fixed;
+	top: 0;
+	cursor: pointer;
+	width: 128px;
+	background: center no-repeat;
+	opacity: 0;
+}
+
+.control.navigate:hover {
+	display: block;
+	opacity: 1;
+}
+
+.control.navigate.left {
+	left: 0;
+	background-image: url(img/left.png);
+}
+
+.control.navigate.right {
+	right: 0;
+	background-image: url(img/right.png);
 }
 
 .ui-draggable {
