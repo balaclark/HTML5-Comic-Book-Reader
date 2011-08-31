@@ -52,6 +52,10 @@
 	opacity: 0;
 }
 
+#cb-toolbar #cb-status {
+	float: right;
+}
+
 #cb-toolbar:hover {
 	opacity: 1;
 }
@@ -59,9 +63,4 @@
 #cb-color {
 	width: 200px;
 	height: 150px;
-}
-
-#cb-status {
-	top: 0;
-	right: 0;
 }
