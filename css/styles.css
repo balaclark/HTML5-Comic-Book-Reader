@@ -3,13 +3,13 @@
 	color: #fff;
 	font-size: 12px;
 	background-color: #111;
-	margin: 5px;
-	padding: 8px;
+	padding: 10px;
 	opacity: .9;
 	position: fixed !important;
 }
 
 .cb-control.floating {
+	margin: 5px;
 	border: 2px solid #444;
 	border-radius: 4px;
 	-webkit-border-radius: 4px;
@@ -29,7 +29,6 @@
 }
 
 .cb-control.cb-navigate:hover {
-	display: block;
 	opacity: 1;
 }
 
@@ -45,6 +44,16 @@
 
 .ui-draggable {
 	cursor: move;
+}
+
+#cb-toolbar {
+	top: 0;
+	height: 25px;
+	opacity: 0;
+}
+
+#cb-toolbar:hover {
+	opacity: 1;
 }
 
 #cb-color {
