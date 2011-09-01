@@ -37,12 +37,12 @@ body {
 
 .control.navigate.left {
 	left: 0;
-	background-image: url(img/left.png);
+	background-image: url(../img/left.png);
 }
 
 .control.navigate.right {
 	right: 0;
-	background-image: url(img/right.png);
+	background-image: url(../img/right.png);
 }
 
 .ui-draggable {
