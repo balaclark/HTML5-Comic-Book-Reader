@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf8">
+		<title>Basic</title>
+
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
+		<script src="../lib/pixastic/pixastic.core.js"></script>
+		<script src="../lib/pixastic/actions/brightness.js"></script>
+		<script src="../lib/pixastic/actions/desaturate.js"></script>
+		<script src="../lib/pixastic/actions/sharpen.js"></script>
+		<script src="../lib/ComicBook.js"></script>
+
+		<link rel="stylesheet" href="../css/reset.css">
+		<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.0/themes/smoothness/jquery-ui.css">
+		<link rel="stylesheet" href="../css/styles.css">
+	</head>
+	<body>
+
+		<canvas id="comic"></canvas>
+
+		<script>
+			var book = new ComicBook('comic', [
+        		'futuristic_tales/a-fc.jpg',
+     			'futuristic_tales/x-002.jpg',
+     			'futuristic_tales/x-003.jpg',
+     			'futuristic_tales/x-004.jpg',
+     			'futuristic_tales/x-005.jpg',
+     			'futuristic_tales/x-006.jpg',
+     			'futuristic_tales/x-007.jpg',
+     			'futuristic_tales/x-008.jpg',
+     			'futuristic_tales/x-009.jpg',
+     			'futuristic_tales/x-010.jpg',
+     			'futuristic_tales/x-011.jpg',
+     			'futuristic_tales/x-012.jpg',
+     			'futuristic_tales/x-013.jpg',
+     			'futuristic_tales/x-014.jpg',
+     			'futuristic_tales/x-005.jpg'
+     			]
+			);
+			book.draw();
+		</script>
+	</body>
+</html>
