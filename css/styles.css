@@ -1,9 +1,7 @@
-body {
-	font-size: 12px;
-}
 
-.control {
+.cb-control {
 	color: #fff;
+	font-size: 12px;
 	background-color: #111;
 	margin: 5px;
 	padding: 8px;
@@ -11,7 +9,7 @@ body {
 	position: fixed !important;
 }
 
-.control.floating {
+.cb-control.floating {
 	border: 2px solid #444;
 	border-radius: 4px;
 	-webkit-border-radius: 4px;
@@ -21,7 +19,7 @@ body {
 	-moz-box-shadow: 0 0 4px #000;
 }
 
-.control.navigate {
+.cb-control.cb-navigate {
 	top: 0;
 	margin: 0;
 	cursor: pointer;
@@ -30,17 +28,17 @@ body {
 	opacity: 0;
 }
 
-.control.navigate:hover {
+.cb-control.cb-navigate:hover {
 	display: block;
 	opacity: 1;
 }
 
-.control.navigate.left {
+.cb-control.cb-navigate.left {
 	left: 0;
 	background-image: url(../img/left.png);
 }
 
-.control.navigate.right {
+.cb-control.cb-navigate.right {
 	right: 0;
 	background-image: url(../img/right.png);
 }
@@ -49,12 +47,12 @@ body {
 	cursor: move;
 }
 
-#color {
+#cb-color {
 	width: 200px;
 	height: 150px;
 }
 
-#status {
+#cb-status {
 	top: 0;
 	right: 0;
 }
