@@ -1,0 +1,3 @@
+[submodule "lib/pixastic"]
+	path = lib/pixastic
+	url = https://github.com/jseidelin/pixastic.git
