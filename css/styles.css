@@ -8,14 +8,14 @@
 	position: fixed !important;
 }
 
-.cb-control.floating {
+.cb-control.cb-floating {
 	margin: 5px;
 	-webkit-border-radius: 4px;
 	-moz-border-radius: 4px;
 	border-radius: 4px;
 }
 
-.cb-control.floating,
+.cb-control.cb-floating,
 #cb-toolbar {
 	border: 2px solid #444;
 	-webkit-box-shadow: 0 0 4px #000;
