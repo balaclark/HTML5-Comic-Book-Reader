@@ -4,8 +4,8 @@
 	font-size: 12px;
 	background-color: #111;
 	padding: 10px;
-	opacity: .9;
 	position: fixed !important;
+	opacity: 0.95;
 }
 
 .cb-control.cb-floating {
@@ -52,7 +52,7 @@
 
 #cb-toolbar {
 	top: 0;
-	height: 25px;
+	line-height: 42px;
 	border-top: none;
 	border-left: none;
 	border-right: none;
@@ -61,6 +61,72 @@
 
 #cb-toolbar #cb-status {
 	float: right;
+}
+
+#cb-toolbar button {
+	height: 32px;
+	width: 32px;
+	color: transparent;
+	border: none;
+	background-color: transparent;
+	background-repeat: no-repeat;
+	background-position: center;
+	margin: 0 16px;
+	cursor: pointer;
+}
+
+#cb-toolbar button.cb-close {
+	background-image: url(../img/iconic/white/x_28x28.png);
+}
+
+#cb-toolbar button.cb-close:hover,
+#cb-toolbar button.cb-close:active {
+	background-image: url(../img/iconic/green/x_28x28.png);
+}
+
+#cb-toolbar button.cb-color {
+	background-image: url(../img/iconic/white/cog_alt_32x32.png);
+}
+
+#cb-toolbar button.cb-color:hover,
+#cb-toolbar button.cb-color:active {
+	background-image: url(../img/iconic/green/cog_alt_32x32.png);
+}
+
+#cb-toolbar button.cb-layout {
+	background-image: url(../img/iconic/white/document_fill_32x32.png);
+}
+
+#cb-toolbar button.cb-layout:hover,
+#cb-toolbar button.cb-layout:active {
+	background-image: url(../img/iconic/green/document_fill_32x32.png);
+}
+
+#cb-toolbar button.cb-zoom-out {
+	background-image: url(../img/iconic/white/minus_32x8.png);
+}
+
+#cb-toolbar button.cb-zoom-out:hover,
+#cb-toolbar button.cb-zoom-out:active {
+	background-image: url(../img/iconic/green/minus_32x8.png);
+}
+
+#cb-toolbar button.cb-zoom-in {
+	background-image: url(../img/iconic/white/plus_32x32.png);
+}
+
+#cb-toolbar button.cb-zoom-in:hover,
+#cb-toolbar button.cb-zoom-in:active {
+	background-image: url(../img/iconic/green/plus_32x32.png);
+}
+
+#cb-toolbar button.cb-fit-width {
+	background-image: url(../img/iconic/white/fullscreen_32x32.png);
+}
+
+#cb-toolbar button.cb-fit-width:hover,
+#cb-toolbar button.cb-fit-width:active {
+	background-image: url(../img/iconic/green/fullscreen_32x32.png);
 }
 
 #cb-color {
