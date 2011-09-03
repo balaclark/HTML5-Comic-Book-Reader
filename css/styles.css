@@ -89,7 +89,8 @@
 }
 
 #cb-toolbar button.cb-color:hover,
-#cb-toolbar button.cb-color:active {
+#cb-toolbar button.cb-color:active,
+#cb-toolbar button.cb-color.active {
 	background-image: url(../img/iconic/green/cog_alt_32x32.png);
 }
 
