@@ -26,6 +26,9 @@
 	width: 128px;
 	opacity: 0;
 	background: center no-repeat;
+	-webkit-box-shadow: none;
+	-moz-box-shadow: none;
+	box-shadow: none;
 }
 
 .cb-control.cb-navigate:hover {
