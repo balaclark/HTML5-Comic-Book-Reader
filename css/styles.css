@@ -66,13 +66,20 @@
 	box-shadow: none;
 }
 
+#cb-status {
+	z-index: 101;
+	font-size: 12px;
+	right: 0;
+	bottom: 0;
+	margin: 8px;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+}
+
 #cb-toolbar {
 	top: 0;
 	border-bottom: 2px solid #444;
-}
-
-#cb-toolbar #cb-status {
-	float: right;
 }
 
 #cb-toolbar button {
