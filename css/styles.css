@@ -161,7 +161,7 @@ label[for="cb-desaturate"] {
 }
 
 #cb-reset {
-	background: transparent url(../img/iconic/white/reload_12x14.png) no-repeat left center;
+	background: transparent url(../img/iconic/reload_12x14.png) no-repeat left center;
 	padding-left: 16px;
 	height: 14px;
 	border: none;
