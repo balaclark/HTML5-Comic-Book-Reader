@@ -105,7 +105,8 @@
 	background-position-x: -24px;
 }
 
-#cb-toolbar button.disabled {
+#cb-toolbar button[disabled=disabled] {
+	cursor: auto;
 	background-position-x: -48px;
 }
 
