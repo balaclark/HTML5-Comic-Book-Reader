@@ -41,7 +41,9 @@
 			);
 			book.draw();
 
-			window.onresize = book.drawPage;
+			$(window).resize(function(event) {
+				book.draw();
+			});
 		</script>
 	</body>
 </html>
