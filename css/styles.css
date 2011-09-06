@@ -99,40 +99,25 @@
 	cursor: pointer;
 }
 
-#cb-toolbar button:hover,
-#cb-toolbar button:active,
-#cb-toolbar button.active {
-	background-position-x: -24px;
-}
+#cb-toolbar button.cb-close { background-position: 0 -120px }
+#cb-toolbar button.cb-close:hover { background-position: -24px -120px }
 
-#cb-toolbar button[disabled=disabled] {
-	cursor: auto;
-	background-position-x: -48px;
-}
+#cb-toolbar button.cb-color { background-position: 0 0 }
+#cb-toolbar button.cb-color:hover,
+#cb-toolbar button.cb-color.active { background-position: -24px 0 }
 
-#cb-toolbar button.cb-close {
-	background-position-y: -120px;
-}
+#cb-toolbar button.cb-layout { background-position: 0 -24px }
+#cb-toolbar button.cb-layout:hover { background-position: -24px -24px }
 
-#cb-toolbar button.cb-color {
-	background-position-y: 0;
-}
+#cb-toolbar button.cb-zoom-out { background-position: 0 -72px }
+#cb-toolbar button.cb-zoom-out:hover { background-position: -24px -72px }
 
-#cb-toolbar button.cb-layout {
-	background-position-y: -24px;
-}
+#cb-toolbar button.cb-zoom-in {	background-position: 0 -96px }
+#cb-toolbar button.cb-zoom-in:hover { background-position: -24px -96px }
 
-#cb-toolbar button.cb-zoom-out {
-	background-position-y: -72px;
-}
-
-#cb-toolbar button.cb-zoom-in {
-	background-position-y: -96px;
-}
-
-#cb-toolbar button.cb-fit-width {
-	background-position-y: -48px;
-}
+#cb-toolbar button.cb-fit-width { background-position: 0 -48px }
+#cb-toolbar button.cb-fit-width:hover { background-position: -24px -48px }
+#cb-toolbar button.cb-fit-width[disabled=disabled] { background-position: -48px -48px }
 
 #cb-color {
 	width: 246px;
