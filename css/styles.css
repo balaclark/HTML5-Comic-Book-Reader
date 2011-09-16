@@ -77,6 +77,16 @@
 	border-radius: 4px;
 }
 
+#cb-progress-bar {
+	width: 200px;
+	height: 3px;
+}
+
+#cb-progress-bar .ui-widget-header {
+	background: #86C441;
+	border-color: #3E7600;
+}
+
 #cb-toolbar #cb-comic-info {
 	float: right;
 	line-height: 24px;
