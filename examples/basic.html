@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf8">
+		<title>Basic</title>
+
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
+		<script src="../lib/ComicBook.min.js"></script>
+
+		<link rel="stylesheet" href="../css/reset.css">
+		<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.0/themes/smoothness/jquery-ui.css">
+		<link rel="stylesheet" href="../css/styles.css">
+	</head>
+	<body>
+
+		<canvas id="comic"></canvas>
+
+		<script>
+			var book = new ComicBook('comic', [
+				'goldenboy/goldenboy_00.jpg',
+				'goldenboy/goldenboy_01.jpg',
+				'goldenboy/goldenboy_02.jpg',
+				'goldenboy/goldenboy_03.jpg',
+				'goldenboy/goldenboy_04.jpg',
+				'goldenboy/goldenboy_05.jpg',
+				'goldenboy/goldenboy_06.jpg',
+				'goldenboy/goldenboy_07.jpg',
+				'goldenboy/goldenboy_08.jpg',
+				'goldenboy/goldenboy_09.jpg',
+				'goldenboy/goldenboy_10.jpg',
+				'goldenboy/goldenboy_11.jpg',
+				'goldenboy/goldenboy_12.jpg',
+				'goldenboy/goldenboy_13.jpg',
+				'goldenboy/goldenboy_14.jpg',
+				'goldenboy/goldenboy_15.jpg',
+				'goldenboy/goldenboy_16.jpg',
+				'goldenboy/goldenboy_17.jpg',
+				'goldenboy/goldenboy_18.jpg',
+				'goldenboy/goldenboy_19.jpg',
+				'goldenboy/goldenboy_20.jpg',
+				'goldenboy/goldenboy_21.jpg',
+				'goldenboy/goldenboy_22.jpg',
+				'goldenboy/goldenboy_23.jpg',
+				'goldenboy/goldenboy_24.jpg',
+				'goldenboy/goldenboy_25.jpg'
+   			]);
+			book.draw();
+
+			$(window).resize(function(event) {
+				book.draw();
+			});
+		</script>
+	</body>
+</html>
