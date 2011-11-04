@@ -129,6 +129,12 @@
 #cb-toolbar button.cb-fit-width:hover { background-position: -24px -48px }
 #cb-toolbar button.cb-fit-width[disabled=disabled] { background-position: -48px -48px }
 
+#cb-toolbar button.cb-read-direction#toleft{ background-position: 0 -144px }
+#cb-toolbar button.cb-read-direction:hover#toleft{ background-position: -24px -144px }
+
+#cb-toolbar button.cb-read-direction#toright{ background-position: 0 -168px }
+#cb-toolbar button.cb-read-direction:hover#toright { background-position: -24px -168px }
+
 #cb-color {
 	width: 246px;
 	top: 44px;
