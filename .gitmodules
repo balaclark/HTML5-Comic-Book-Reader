@@ -1,3 +1,6 @@
 [submodule "lib/pixastic"]
 	path = lib/pixastic
 	url = https://github.com/jseidelin/pixastic.git
+[submodule "css/Aristo"]
+	path = css/Aristo
+	url = git://github.com/taitems/Aristo-jQuery-UI-Theme.git
