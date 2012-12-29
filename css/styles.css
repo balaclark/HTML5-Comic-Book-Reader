@@ -7,6 +7,19 @@
 .cb-control {
 	color: #fff;
 	background-color: #111;
+	background-image: linear-gradient(bottom, rgb(17,17,17) 20%, rgb(41,41,41) 72%);
+	background-image: -o-linear-gradient(bottom, rgb(17,17,17) 20%, rgb(41,41,41) 72%);
+	background-image: -moz-linear-gradient(bottom, rgb(17,17,17) 20%, rgb(41,41,41) 72%);
+	background-image: -webkit-linear-gradient(bottom, rgb(17,17,17) 20%, rgb(41,41,41) 72%);
+	background-image: -ms-linear-gradient(bottom, rgb(17,17,17) 20%, rgb(41,41,41) 72%);
+
+	background-image: -webkit-gradient(
+		linear,
+		left bottom,
+		left top,
+		color-stop(0.2, rgb(17,17,17)),
+		color-stop(0.72, rgb(41,41,41))
+	);
 	padding: 10px;
 	position: fixed !important;
 	-webkit-box-shadow: 0 0 4px #000;
@@ -94,7 +107,7 @@
 
 #cb-toolbar {
 	top: 0;
-	border-bottom: 2px solid #444;
+	border-bottom: 1px solid #888;
 }
 
 #cb-toolbar button {
@@ -128,6 +141,12 @@
 #cb-toolbar button.cb-fit-width { background-position: 0 -48px }
 #cb-toolbar button.cb-fit-width:hover { background-position: -24px -48px }
 #cb-toolbar button.cb-fit-width[disabled=disabled] { background-position: -48px -48px }
+
+#cb-toolbar button.cb-read-direction#toleft{ background-position: 0 -144px }
+#cb-toolbar button.cb-read-direction:hover#toleft{ background-position: -24px -144px }
+
+#cb-toolbar button.cb-read-direction#toright{ background-position: 0 -168px }
+#cb-toolbar button.cb-read-direction:hover#toright { background-position: -24px -168px }
 
 #cb-color {
 	width: 246px;
