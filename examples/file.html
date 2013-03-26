@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf8">
+		<title>App</title>
+
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>
+
+		<script src="../lib/bitjs/io.js"></script>
+		<script src="../lib/bitjs/archive.js"></script>
+		<script src="../lib/ComicBook.min.js"></script>
+		<link rel="stylesheet" href="../css/reset.css">
+		<link rel="stylesheet" href="../css/Aristo/css/Aristo/Aristo.css">
+		<link rel="stylesheet" href="../css/styles.css">
+		<style>
+			.progress, .bar {
+				width: 200px;
+				height: 1em;
+				display: inline-block;
+			}
+			.progress {
+				border: solid 1px;
+			}
+			.bar {
+				background-color: gray;
+				width: 0;
+			}
+		</style>
+	</head>
+	<body>
+
+		<div id="filepicker" style="margin:10px">
+			<input type="file" id="open">
+
+			<div id="progressbar" style="display:none">
+				opening...
+				<br>
+				<span class="progress"><span class="bar"></span></span>
+			</div>
+		</div>
+
+		<canvas id="comic" style="display:none"></canvas>
+
+		<script>
+		(function () {
+
+			'use strict';
+
+			var pages = [], $progressbar = $('.bar');
+
+			bitjs.archive.Unrarrer.prototype.getScriptFileName = function() { return '/cbr/lib/bitjs/unrar.js' }
+			bitjs.archive.Unzipper.prototype.getScriptFileName = function() { return '/cbr/lib/bitjs/unzip.js' }
+
+			$('#open').on('change', function () {
+
+				var fr = new FileReader();
+				var file = this.files[0];
+				var archive_class = ({ cbz: 'Unzipper', cbr: 'Unrarrer' })[file.name.match(/\.(cbz|cbr)$/)[1]];
+
+				$('#open').hide();
+				$('#progressbar').show();
+
+				fr.onload = function () {
+
+					var done = false;
+					var ua = new bitjs.archive[archive_class](this.result);
+
+					ua.addEventListener(bitjs.archive.UnarchiveEvent.Type.PROGRESS, function (e) {
+						var progress = Math.floor(e.currentBytesUnarchived / e.totalUncompressedBytesInArchive * 100);
+						$progressbar.css('width', progress + '%');
+						if (progress == 100 && !done) {
+							drawBook(pages);
+							done = true;
+						}
+					});
+
+					ua.addEventListener(bitjs.archive.UnarchiveEvent.Type.EXTRACT, function (e) {
+						if (e.unarchivedFile.filename.match(/jpg$/)) {
+							var url = window.URL.createObjectURL(new Blob([e.unarchivedFile.fileData], { type: 'image/jpeg' } ));
+							pages.push(url);
+							// $('body').append($('<image>').attr('src', url).css('width', '200px'));
+						}
+					});
+
+					ua.start();
+				};
+
+				fr.readAsArrayBuffer(file);
+
+			});
+
+			function drawBook(pages) {
+				var book = new ComicBook('comic', pages);
+				$('#filepicker').hide();
+				$('#comic').show();
+				book.draw();
+				$(window).resize(function(event) {
+					book.draw();
+				});
+			}
+
+		}());
+		</script>
+	</body>
+</html>
