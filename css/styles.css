@@ -19,7 +19,7 @@
 	margin: 0 0 4px;
 }
 
-.cb-control.cb-navigate {
+.navigate {
 	top: 0;
 	margin: 0;
 	cursor: pointer;
@@ -31,16 +31,16 @@
 	box-shadow: none;
 }
 
-.cb-control.cb-navigate:hover {
+.navigate:hover {
 	opacity: 1;
 }
 
-.cb-control.cb-navigate.left {
+.navigate-left {
 	left: 0;
 	background-image: url(../img/left.png);
 }
 
-.cb-control.cb-navigate.right {
+.navigate-right {
 	right: 0;
 	background-image: url(../img/right.png);
 }
@@ -79,10 +79,15 @@
 
 #cb-progress-bar {
 	width: 200px;
+}
+
+#cb-progress-bar,
+#cb-progress-bar .progressbar-value {
 	height: 3px;
 }
 
-#cb-progress-bar .ui-widget-header {
+#cb-progress-bar .progressbar-value {
+	width: 0;
 	background: #86C441;
 	border-color: #3E7600;
 }

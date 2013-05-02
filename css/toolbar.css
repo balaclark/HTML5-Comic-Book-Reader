@@ -1,0 +1,118 @@
+
+body {
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: 12px;
+	line-height: 20px;
+	color: #333;
+}
+
+button, input, label {
+	cursor: pointer;
+}
+
+.pull-left {
+	float: left;
+}
+
+.pull-right {
+	float: right;
+}
+
+.toolbar {
+	color: white;
+	background-color: black;
+	background-image: linear-gradient(to bottom, rgb(80, 80, 80), rgb(17, 17, 17));
+	overflow: visible;
+	padding: 8px;
+	position: fixed;
+	left: 0;
+	right: 0;
+	z-index: 99;
+	margin-bottom: 0;
+	box-shadow: 0 1px 10px rgba(0, 0, 0, 0.4);
+	opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.toolbar:hover {
+	opacity: 1;
+}
+
+.toolbar li {
+	display: inline-block;
+	position: relative;
+}
+
+.toolbar .separator {
+	border: solid 1px;
+	height: 1em;
+}
+
+.toolbar button {
+	color: white;
+	border: none;
+	background-color: transparent;
+	padding: 0;
+}
+
+.toolbar li > button {
+	font-size: 16px;
+	padding: 0 12px;
+}
+
+.toolbar li > button:hover {
+	color: #8CC746;
+}
+
+.toolbar button[data-action=close]:hover {
+	color: #FF6464;
+}
+
+.toolbar .dropdown {
+	font-size: 12px;
+	position: absolute;
+	width: 212px;
+	background-color: white;
+	color: #111;
+	border-radius: 4px;
+	box-shadow: 0 1px 10px rgba(0, 0, 0, 0.4);
+	top: 2em;
+	padding: 4px 0;
+	display: none;
+}
+
+.toolbar li:hover > .dropdown {
+	display: block;
+}
+
+/* dropdown arrow code taken from Twitter Bootstrap 2.3.1 */
+.toolbar .dropdown:after {
+	position: absolute;
+	top: -4px;
+	left: 15px;
+	display: inline-block;
+	border-right: 6px solid transparent;
+	border-bottom: 6px solid #ffffff;
+	border-left: 6px solid transparent;
+	content: '';
+}
+
+.dropdown .control-group {
+	padding: 8px;
+}
+
+.dropdown .sliders {
+	font-size: 16px;
+}
+
+.dropdown .control-group span {
+	float: left;
+	margin: 0 2px;
+	clear: both;
+}
+
+.dropdown .control-group input[type=range] {
+	width: 171px;
+	float: right;
+	margin: 0;
+}
