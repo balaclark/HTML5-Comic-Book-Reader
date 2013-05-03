@@ -20,6 +20,16 @@
 	opacity: 0;
 	background: center no-repeat;
 	box-shadow: none;
+	padding: 0 3em;
+}
+
+.navigate > span {
+	color: #000;
+	font-size: 13em;
+	background-color: rgba(255, 255, 255, 0.8);
+	border-radius: 13em;
+	top: 35%;
+	position: relative;
 }
 
 .navigate:hover {
