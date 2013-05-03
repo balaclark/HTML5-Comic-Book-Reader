@@ -25,9 +25,9 @@
 
 .navigate > span {
 	color: #000;
-	font-size: 13em;
+	font-size: 10em;
 	background-color: rgba(255, 255, 255, 0.8);
-	border-radius: 13em;
+	border-radius: 1em;
 	top: 35%;
 	position: relative;
 }
@@ -42,10 +42,6 @@
 
 .navigate-right {
 	right: 0;
-}
-
-.ui-draggable {
-	cursor: move;
 }
 
 #cb-loading-overlay {
