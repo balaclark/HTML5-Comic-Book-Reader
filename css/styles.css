@@ -47,7 +47,7 @@
 #cb-loading-overlay {
 	z-index: 100;
 	opacity: 0.8;
-	background: #000 url("../img/loading.gif") no-repeat center;
+	background: #000 url("img/loading.gif") no-repeat center;
 	box-shadow: none;
 }
 

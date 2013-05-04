@@ -1,26 +1,27 @@
 
-SOURCES = lib/pixastic/pixastic.core.js \
-          lib/pixastic/actions/brightness.js \
-          lib/pixastic/actions/desaturate.js \
-          lib/pixastic/actions/sharpen.js \
-          lib/vendor/handlebars.runtime-1.0.rc.1.min.js \
-          lib/templates.js \
-          lib/ComicBook.js
-
-all: reset lib/ComicBook.combined.js lib/ComicBook.min.js clean
-
-lib/templates.js: templates/*.handlebars
-	handlebars $< -f $@
-
-lib/ComicBook.combined.js: ${SOURCES}
-	cat > $@ $^
-
-lib/ComicBook.min.js: lib/ComicBook.combined.js
-	java -jar bin/closure-complier/compiler.jar --compilation_level SIMPLE_OPTIMIZATIONS --js $< --js_output_file $@
-
-reset:
-	touch lib/ComicBook.min.js
-	rm lib/ComicBook.min.js
+build:
+	@echo "Compiling Handlebars templates..."
+	@./node_modules/.bin/handlebars templates/*.handlebars -f lib/templates.js
+	@echo "Compiling and minifying javascript..."
+	@mkdir -p comicbook/js/pixastic
+	@cat lib/vendor/pixastic/pixastic.js lib/vendor/pixastic/pixastic.effects.js lib/vendor/pixastic/pixastic.worker.js lib/vendor/handlebars.runtime-1.0.rc.1.min.js lib/templates.js lib/ComicBook.js > comicbook/js/comicbook.js
+	@cp lib/vendor/pixastic/pixastic.js comicbook/js/pixastic
+	@cp lib/vendor/pixastic/pixastic.effects.js comicbook/js/pixastic
+	@cp lib/vendor/pixastic/pixastic.worker.js comicbook/js/pixastic
+	@cp lib/vendor/pixastic/pixastic.worker.control.js comicbook/js/pixastic
+	@cp lib/vendor/pixastic/license-gpl-3.0.txt comicbook/js/pixastic
+	@cp lib/vendor/pixastic/license-mpl.txt comicbook/js/pixastic
+	@./node_modules/.bin/uglifyjs -nc comicbook/js/comicbook.js > comicbook/js/comicbook.min.js
+	@echo "Compiling CSS..."
+	@cat fonts/icomoon-toolbar/style.css css/reset.css css/styles.css css/toolbar.css > comicbook/comicbook.css
+	@echo "Copying assets..."
+	@cp -r css/img comicbook/img
+	@cp -r fonts/icomoon-toolbar/fonts comicbook
+	@cp -r fonts/icomoon-toolbar/license.txt comicbook/fonts
+	@echo "Updating examples"
+	cp -r comicbook examples
+	@echo "Done"
 
 clean:
-	rm lib/ComicBook.combined.js
+	rm -r comicbook
+	rm -r examples/comicbook

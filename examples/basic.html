@@ -3,13 +3,9 @@
 	<head>
 		<meta charset="utf8">
 		<title>Basic</title>
-
-		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-		<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>
-		<script src="../lib/ComicBook.min.js"></script>
-		<link rel="stylesheet" href="../css/reset.css">
-		<link rel="stylesheet" href="../css/Aristo/css/Aristo/Aristo.css">
-		<link rel="stylesheet" href="../css/styles.css">
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+		<script src="comicbook/js/comicbook.min.js"></script>
+		<link rel="stylesheet" href="comicbook/comicbook.css">
 	</head>
 	<body>
 
@@ -43,10 +39,13 @@
 				'goldenboy/goldenboy_23.jpg',
 				'goldenboy/goldenboy_24.jpg',
 				'goldenboy/goldenboy_25.jpg'
-   			]);
+			], {
+   			libPath: "/reader/examples/comicbook/js/"
+   		});
+
 			book.draw();
 
-			$(window).resize(function(event) {
+			$(window).on('resize', function(event) {
 				book.draw();
 			});
 		</script>

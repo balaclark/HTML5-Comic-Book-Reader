@@ -9,16 +9,11 @@
 	<head>
 		<meta charset="utf8">
 		<title>App</title>
-
-		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-		<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>
-
-		<script src="../lib/bitjs/io.js"></script>
-		<script src="../lib/bitjs/archive.js"></script>
-		<script src="../lib/ComicBook.js"></script>
-		<link rel="stylesheet" href="../css/reset.css">
-		<link rel="stylesheet" href="../css/Aristo/css/Aristo/Aristo.css">
-		<link rel="stylesheet" href="../css/styles.css">
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+		<script src="bitjs/io.js"></script>
+		<script src="bitjs/archive.js"></script>
+		<script src="comicbook/js/comicbook.min.js"></script>
+		<link rel="stylesheet" href="comicbook/comicbook.css">
 		<style>
 			#filepicker {
 				margin: 10px;
@@ -170,7 +165,7 @@
 
 						var name = this.file.name.replace(/\.[a-z]+$/, '');
 						var id = encodeURIComponent(name.toLowerCase());
-						var book = new ComicBook('comic', pages);
+						var book = new ComicBook('comic', pages, { libPath: '/reader/examples/comicbook/js/'});
 
 						document.title = name;
 
@@ -179,7 +174,7 @@
 
 						book.draw();
 
-						$(window).resize(function () {
+						$(window).on('resize', function () {
 							book.draw();
 						});
 					}
