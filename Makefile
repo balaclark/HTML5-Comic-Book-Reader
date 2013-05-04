@@ -19,9 +19,9 @@ build:
 	@cp -r fonts/icomoon-toolbar/fonts comicbook
 	@cp -r fonts/icomoon-toolbar/license.txt comicbook/fonts
 	@echo "Updating examples"
-	cp -r comicbook examples
+	@cp -r comicbook examples
 	@echo "Done"
 
 clean:
-	rm -r comicbook
-	rm -r examples/comicbook
+	@rm -r comicbook
+	@rm -r examples/comicbook
