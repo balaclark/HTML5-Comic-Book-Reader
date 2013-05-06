@@ -9,11 +9,11 @@
     "type": "git",
     "url": "https://github.com/balaclark/HTML5-Comic-Book-Reader.git"
   },
-    "licenses": [
-    {
-      "type": "Apache-2.0",
-      "url": "http://www.apache.org/licenses/LICENSE-2.0"
-    }
+  "licenses": [
+  {
+    "type": "Apache-2.0",
+    "url": "http://www.apache.org/licenses/LICENSE-2.0"
+  }
   ],
     "devDependencies": {
       "handlebars": "1.0.10",
