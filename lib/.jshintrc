@@ -1,0 +1,20 @@
+{
+    "predef": [
+        "jQuery",
+        "Handlebars",
+        "Pixastic"
+    ],
+    "forin": true,
+    "noarg": true,
+    "noempty": true,
+    "eqeqeq": true,
+    "bitwise": true,
+    "strict": true,
+    "undef": true,
+    "unused": true,
+    "curly": true,
+    "browser": true,
+    "maxerr": 50,
+    "quotmark": "double",
+    "trailing": false
+}

@@ -1,5 +1,7 @@
 
 build:
+	@echo "Running jshint..."
+	@./node_modules/.bin/jshint lib/ComicBook.js --config lib/.jshintrc
 	@echo "Compiling Handlebars templates..."
 	@./node_modules/.bin/handlebars templates/*.handlebars -f lib/templates.js
 	@echo "Compiling and minifying javascript..."
