@@ -16,5 +16,6 @@
     "browser": true,
     "maxerr": 50,
     "quotmark": "double",
-    "trailing": false
+    "trailing": false,
+    "indent": 2
 }
