@@ -15,7 +15,7 @@
     "curly": true,
     "browser": true,
     "maxerr": 50,
-    "quotmark": "double",
+    "quotmark": "single",
     "trailing": false,
     "indent": 2
 }
