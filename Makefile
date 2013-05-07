@@ -1,3 +1,6 @@
+#
+# build package & update examples
+#
 
 build:
 	@echo "Running jshint..."
@@ -23,6 +26,22 @@ build:
 	@echo "Updating examples"
 	@cp -r comicbook examples
 	@echo "Done"
+
+#
+# run jshint & jasmine tests
+#
+
+test:
+	@./node_modules/.bin/jshint lib/ComicBook.js --config lib/.jshintrc
+	@./node_modules/.bin/jshint lib/tests/spec/*.js --config lib/.jshintrc
+	@node lib/tests/server.js &
+	@./node_modules/.bin/phantomjs lib/tests/run-jasmine.js http://127.0.0.1:3000/lib/tests/SpecRunner.html
+	@kill -9 `cat lib/tests/pid.txt`
+	@rm lib/tests/pid.txt
+
+#
+# remove prior builds
+#
 
 clean:
 	@rm -r comicbook
