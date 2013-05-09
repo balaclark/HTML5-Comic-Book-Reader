@@ -3,6 +3,7 @@
 .DS_Store
 .project
 .settings
+lib/tests/pid.txt
 
 comicbook
 node_modules
