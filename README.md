@@ -1,4 +1,3 @@
-
 Comic Book Reader
 =================
 
@@ -6,7 +5,7 @@ Comic Book Reader
 
 A canvas based web application for reading comics. You can also see an implementation
 of this as an offline Chrome packaged application CBZ / CBR comic book reader at:
-[https://github.com/balaclark/chrome-comic-reader](Chrome Comic Book Reader).
+https://github.com/balaclark/chrome-comic-reader.
 
 Usage
 -----
