@@ -142,6 +142,10 @@
 #cb-toolbar button.cb-fit-width:hover { background-position: -24px -48px }
 #cb-toolbar button.cb-fit-width[disabled=disabled] { background-position: -48px -48px }
 
+#cb-toolbar button.cb-fit-best { background-position: 0 -192px }
+#cb-toolbar button.cb-fit-best:hover { background-position: -24px -192px }
+#cb-toolbar button.cb-fit-best[disabled=disabled] { background-position: -48px -192px }
+
 #cb-toolbar button.cb-read-direction#toleft{ background-position: 0 -144px }
 #cb-toolbar button.cb-read-direction:hover#toleft{ background-position: -24px -144px }
 
