@@ -23,7 +23,7 @@ button, input, label {
 	background-color: black;
 	background-image: linear-gradient(to bottom, rgb(80, 80, 80), rgb(17, 17, 17));
 	overflow: visible;
-	padding: 8px;
+	padding: 0.75em;
 	position: fixed;
 	left: 0;
 	right: 0;
@@ -32,6 +32,10 @@ button, input, label {
 	box-shadow: 0 1px 10px rgba(0, 0, 0, 0.4);
 	opacity: 0;
   transition: opacity 0.2s ease-in-out;
+}
+
+.mobile .toolbar {
+	opacity: 1;
 }
 
 .toolbar:hover {
@@ -56,7 +60,7 @@ button, input, label {
 }
 
 .toolbar li > button {
-	font-size: 16px;
+	font-size: 1.5em;
 	padding: 0 12px;
 }
 
@@ -69,7 +73,7 @@ button, input, label {
 }
 
 .toolbar .dropdown {
-	font-size: 12px;
+	font-size: 1em;
 	position: absolute;
 	width: 212px;
 	background-color: white;
@@ -81,7 +85,7 @@ button, input, label {
 	display: none;
 }
 
-.toolbar li:hover > .dropdown {
+body:not(.mobile) .toolbar li:hover > .dropdown {
 	display: block;
 }
 
@@ -97,12 +101,16 @@ button, input, label {
 	content: '';
 }
 
+.toolbar .close {
+	display: none;
+}
+
 .dropdown .control-group {
 	padding: 8px;
 }
 
 .dropdown .sliders {
-	font-size: 16px;
+	font-size: 1.5em;
 }
 
 .dropdown .control-group span {
