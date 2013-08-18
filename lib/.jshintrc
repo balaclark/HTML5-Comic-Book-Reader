@@ -2,7 +2,8 @@
     "predef": [
         "jQuery",
         "Handlebars",
-        "Pixastic"
+        "Pixastic",
+        "Quo"
     ],
     "forin": true,
     "noarg": true,

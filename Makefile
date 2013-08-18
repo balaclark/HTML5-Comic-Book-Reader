@@ -10,7 +10,7 @@ build:
 	@./node_modules/.bin/handlebars templates/*.handlebars -f lib/templates.js
 	@echo "Compiling and minifying javascript..."
 	@mkdir -p comicbook/js/pixastic
-	@cat lib/vendor/pixastic/pixastic.js lib/vendor/pixastic/pixastic.effects.js lib/vendor/pixastic/pixastic.worker.js lib/vendor/handlebars.runtime-1.0.rc.1.min.js lib/templates.js lib/ComicBook.js > comicbook/js/comicbook.js
+	@cat lib/vendor/pixastic/pixastic.js lib/vendor/pixastic/pixastic.effects.js lib/vendor/pixastic/pixastic.worker.js lib/vendor/handlebars.runtime-1.0.rc.1.min.js lib/vendor/quo.js lib/templates.js lib/ComicBook.js > comicbook/js/comicbook.js
 	@cp lib/vendor/pixastic/pixastic.js comicbook/js/pixastic
 	@cp lib/vendor/pixastic/pixastic.effects.js comicbook/js/pixastic
 	@cp lib/vendor/pixastic/pixastic.worker.js comicbook/js/pixastic
