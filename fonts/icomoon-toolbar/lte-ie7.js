@@ -34,7 +34,8 @@ window.onload = function() {
 			'icon-adjust' : '&#xf042;',
 			'icon-sun' : '&#xe018;',
 			'icon-remove-sign' : '&#xf057;',
-			'icon-remove' : '&#xf00d;'
+			'icon-remove' : '&#xf00d;',
+			'icon-copy' : '&#xe037;'
 		},
 		els = document.getElementsByTagName('*'),
 		i, attr, html, c, el;
