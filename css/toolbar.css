@@ -64,6 +64,10 @@ button, input, label {
 	padding: 0 12px;
 }
 
+.mobile .toolbar li > button {
+	padding: 0 9px;
+}
+
 .toolbar li > button:hover {
 	color: #8CC746;
 }
