@@ -1,0 +1,129 @@
+@font-face {
+	font-family: 'toolbar';
+	src:url('fonts/toolbar.eot');
+	src:url('fonts/toolbar.eot?#iefix') format('embedded-opentype'),
+		url('fonts/toolbar.woff') format('woff'),
+		url('fonts/toolbar.ttf') format('truetype'),
+		url('fonts/toolbar.svg#toolbar') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+/* Use the following CSS code if you want to use data attributes for inserting your icons */
+[data-icon]:before {
+	font-family: 'toolbar';
+	content: attr(data-icon);
+	speak: none;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+	-webkit-font-smoothing: antialiased;
+}
+
+/* Use the following CSS code if you want to have a class per icon */
+/*
+Instead of a list of all class selectors,
+you can use the generic selector below, but it's slower:
+[class*="icon-"] {
+*/
+.icon-file, .icon-image, .icon-zoom-out, .icon-zoom-in, .icon-expand, .icon-expand-2, .icon-folder-open, .icon-folder, .icon-cog, .icon-menu, .icon-wrench, .icon-settings, .icon-loop, .icon-pin, .icon-first, .icon-last, .icon-arrow-left, .icon-arrow-right, .icon-arrow-left-2, .icon-arrow-right-2, .icon-arrow-left-3, .icon-arrow-right-3, .icon-previous, .icon-next, .icon-droplet, .icon-adjust, .icon-sun, .icon-remove-sign, .icon-remove, .icon-copy {
+	font-family: 'toolbar';
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+	-webkit-font-smoothing: antialiased;
+}
+.icon-file:before {
+	content: "\e000";
+}
+.icon-image:before {
+	content: "\e001";
+}
+.icon-zoom-out:before {
+	content: "\e002";
+}
+.icon-zoom-in:before {
+	content: "\e003";
+}
+.icon-expand:before {
+	content: "\e004";
+}
+.icon-expand-2:before {
+	content: "\e005";
+}
+.icon-folder-open:before {
+	content: "\e006";
+}
+.icon-folder:before {
+	content: "\e007";
+}
+.icon-cog:before {
+	content: "\e008";
+}
+.icon-menu:before {
+	content: "\e009";
+}
+.icon-wrench:before {
+	content: "\e00a";
+}
+.icon-settings:before {
+	content: "\e00b";
+}
+.icon-loop:before {
+	content: "\e00c";
+}
+.icon-pin:before {
+	content: "\e00d";
+}
+.icon-first:before {
+	content: "\e00e";
+}
+.icon-last:before {
+	content: "\e00f";
+}
+.icon-arrow-left:before {
+	content: "\e011";
+}
+.icon-arrow-right:before {
+	content: "\e010";
+}
+.icon-arrow-left-2:before {
+	content: "\e012";
+}
+.icon-arrow-right-2:before {
+	content: "\e013";
+}
+.icon-arrow-left-3:before {
+	content: "\e014";
+}
+.icon-arrow-right-3:before {
+	content: "\e015";
+}
+.icon-previous:before {
+	content: "\e016";
+}
+.icon-next:before {
+	content: "\e017";
+}
+.icon-droplet:before {
+	content: "\e01a";
+}
+.icon-adjust:before {
+	content: "\f042";
+}
+.icon-sun:before {
+	content: "\e018";
+}
+.icon-remove-sign:before {
+	content: "\f057";
+}
+.icon-remove:before {
+	content: "\f00d";
+}
+.icon-copy:before {
+	content: "\e037";
+}

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<title>Dev</title>
+
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+		<script src="../lib/vendor/pixastic/pixastic.js"></script>
+		<script src="../lib/vendor/pixastic/pixastic.effects.js"></script>
+		<script src="../lib/vendor/pixastic/pixastic.worker.js"></script>
+		<script src="../lib/vendor/handlebars.runtime-1.0.rc.1.min.js"></script>
+		<script src="../lib/templates.js"></script>
+		<script src="../lib/ComicBook.js"></script>
+		<link rel="stylesheet" href="../css/reset.css">
+		<link rel="stylesheet" href="../fonts/icomoon-toolbar/style.css">
+		<link rel="stylesheet" href="../css/styles.css">
+		<link rel="stylesheet" href="../css/toolbar.css">
+	</head>
+	<body>
+
+		<canvas id="comic"></canvas>
+
+		<script>
+
+			var book = new ComicBook('comic', [
+				'goldenboy/goldenboy_00.jpg',
+				'goldenboy/goldenboy_01.jpg',
+				'goldenboy/goldenboy_02.jpg',
+				'goldenboy/goldenboy_03.jpg',
+				'goldenboy/goldenboy_04.jpg',
+				'goldenboy/goldenboy_05.jpg',
+				'goldenboy/goldenboy_06.jpg',
+				'goldenboy/goldenboy_07.jpg',
+				'goldenboy/goldenboy_08.jpg',
+				'goldenboy/goldenboy_09.jpg',
+				'goldenboy/goldenboy_10.jpg',
+				'goldenboy/goldenboy_11.jpg',
+				'goldenboy/goldenboy_12.jpg',
+				'goldenboy/goldenboy_13.jpg',
+				'goldenboy/goldenboy_14.jpg',
+				'goldenboy/goldenboy_15.jpg',
+				'goldenboy/goldenboy_16.jpg',
+				'goldenboy/goldenboy_17.jpg',
+				'goldenboy/goldenboy_18.jpg',
+				'goldenboy/goldenboy_19.jpg',
+				'goldenboy/goldenboy_20.jpg',
+				'goldenboy/goldenboy_21.jpg',
+				'goldenboy/goldenboy_22.jpg',
+				'goldenboy/goldenboy_23.jpg',
+				'goldenboy/goldenboy_24.jpg',
+				'goldenboy/goldenboy_25.jpg'
+			], {
+				libPath: "/reader/examples/comicbook/js/"
+			});
+
+			book.draw();
+
+			$(window).on('resize', function () {
+				book.draw();
+			});
+		</script>
+	</body>
+</html>

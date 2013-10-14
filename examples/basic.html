@@ -2,19 +2,15 @@
 <html>
 	<head>
 		<meta charset="utf8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
 		<title>Basic</title>
 
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
-		<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
-		<script src="../lib/ComicBook.js"></script>
-		<script src="../lib/pixastic/pixastic.core.js"></script>
-		<script src="../lib/pixastic/actions/brightness.js"></script>
-		<script src="../lib/pixastic/actions/desaturate.js"></script>
-		<script src="../lib/pixastic/actions/brightness.js"></script>
-
-		<link rel="stylesheet" href="../css/reset.css">
-		<link rel="stylesheet" href="../css/Aristo/css/Aristo/Aristo.css">
-		<link rel="stylesheet" href="../css/styles.css">
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+		<script src="comicbook/js/comicbook.min.js"></script>
+		<link rel="stylesheet" href="comicbook/comicbook.css">
 	</head>
 	<body>
 
@@ -48,10 +44,13 @@
 				'goldenboy/goldenboy_23.jpg',
 				'goldenboy/goldenboy_24.jpg',
 				'goldenboy/goldenboy_25.jpg'
-   			]);
+			], {
+   			libPath: "/reader/examples/comicbook/js/"
+   		});
+
 			book.draw();
 
-			$(window).resize(function(event) {
+			$(window).on('resize', function(event) {
 				book.draw();
 			});
 		</script>
