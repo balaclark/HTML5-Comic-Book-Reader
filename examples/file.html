@@ -99,7 +99,7 @@
 				fr.onload = function () {
 
 					var done = false;
-					var ua = new bitjs.archive[archive_class](this.result, '/cbr/lib/bitjs/');
+					var ua = new bitjs.archive[archive_class](this.result, '/HTML5-Comic-Book-Reader/examples/bitjs/');
 
 					ua.addEventListener(bitjs.archive.UnarchiveEvent.Type.EXTRACT, function (e) {
 
@@ -170,7 +170,7 @@
 
 						var name = this.file.name.replace(/\.[a-z]+$/, '');
 						var id = encodeURIComponent(name.toLowerCase());
-						var book = new ComicBook('comic', pages, { libPath: '/reader/examples/comicbook/js/'});
+						var book = new ComicBook('comic', pages, { libPath: '/HTML5-Comic-Book-Reader/examples/comicbook/js/'});
 
 						document.title = name;
 
