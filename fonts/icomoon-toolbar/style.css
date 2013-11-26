@@ -27,7 +27,7 @@ Instead of a list of all class selectors,
 you can use the generic selector below, but it's slower:
 [class*="icon-"] {
 */
-.icon-file, .icon-image, .icon-zoom-out, .icon-zoom-in, .icon-expand, .icon-expand-2, .icon-folder-open, .icon-folder, .icon-cog, .icon-menu, .icon-wrench, .icon-settings, .icon-loop, .icon-pin, .icon-first, .icon-last, .icon-arrow-left, .icon-arrow-right, .icon-arrow-left-2, .icon-arrow-right-2, .icon-arrow-left-3, .icon-arrow-right-3, .icon-previous, .icon-next, .icon-droplet, .icon-adjust, .icon-sun, .icon-remove-sign, .icon-remove {
+.icon-file, .icon-image, .icon-zoom-out, .icon-zoom-in, .icon-expand, .icon-expand-2, .icon-folder-open, .icon-folder, .icon-cog, .icon-menu, .icon-wrench, .icon-settings, .icon-loop, .icon-pin, .icon-first, .icon-last, .icon-arrow-left, .icon-arrow-right, .icon-arrow-left-2, .icon-arrow-right-2, .icon-arrow-left-3, .icon-arrow-right-3, .icon-previous, .icon-next, .icon-droplet, .icon-adjust, .icon-sun, .icon-remove-sign, .icon-remove, .icon-copy {
 	font-family: 'toolbar';
 	speak: none;
 	font-style: normal;
@@ -123,4 +123,7 @@ you can use the generic selector below, but it's slower:
 }
 .icon-remove:before {
 	content: "\f00d";
+}
+.icon-copy:before {
+	content: "\e037";
 }
