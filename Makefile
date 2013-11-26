@@ -47,3 +47,4 @@ test:
 clean:
 	@rm -r comicbook
 	@rm -r examples/comicbook
+	@rm lib/templates.js
