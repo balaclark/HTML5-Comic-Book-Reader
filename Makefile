@@ -17,7 +17,7 @@ build:
 	@cp lib/vendor/pixastic/license-mpl.txt comicbook/js/pixastic
 	@./node_modules/.bin/uglifyjs -nc comicbook/js/comicbook.js > comicbook/js/comicbook.min.js
 	@echo "Compiling CSS..."
-	@cat fonts/icomoon-toolbar/style.css css/reset.css css/styles.css css/toolbar.css > comicbook/comicbook.css
+	@cat fonts/icomoon-toolbar/style.css css/reset.css css/styles.css css/toolbar.css css/thumbnails.css > comicbook/comicbook.css
 	@echo "Copying assets..."
 	@cp -r css/img comicbook/img
 	@cp -r fonts/icomoon-toolbar/fonts comicbook
