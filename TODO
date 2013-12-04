@@ -1,0 +1,21 @@
+Fo sho:
+  - remember reading position / applied effects (per comic)
+  - offline mode via cache manifest
+  - firefox marketplace
+  - create onclose callback, show close button only if set
+  - trigger preload if requesting valid but not loaded images (can happen if network was interupted)
+  - loading and generally hackiness of pointer is buggy, fix.
+  - check for html5 feature support where used: diveintohtml5.org/everything.html or www.modernizr.com
+
+Nice 2 have:
+  - remove image inhancement lag when navigating by pre-applying enhancements to other pages
+  - jump to page?
+  - make page draggable with the cursor
+  - enable menu items via config, allow for custom items
+  - split out classes into seperate files
+  - thumbnail browser
+  - refactor so we are not using all these loose shared variables and other nastyness
+  - use custom event emitters instead of hacky code
+  - properly bind 'this' so we don't have to keep using 'self'
+  - allow toolbar to be hidden on mobile (maybe show a small translucent button that opens the toolbar when clicked)
+  - enhancement progress bar
