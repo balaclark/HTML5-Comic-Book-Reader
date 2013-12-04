@@ -22,6 +22,8 @@ build:
 	@cat fonts/icomoon-toolbar/style.css css/reset.css css/styles.css css/toolbar.css > comicbook/comicbook.css
 	@echo "Copying assets..."
 	@cp -r css/img comicbook/img
+	@cp -r icons/1_Desktop_Icons/icon_128.png comicbook/img
+	@cp -r icons/1_Desktop_Icons/icon_196.png comicbook/img
 	@cp -r fonts/icomoon-toolbar/fonts comicbook
 	@cp -r fonts/icomoon-toolbar/license.txt comicbook/fonts
 	@echo "Updating examples"
