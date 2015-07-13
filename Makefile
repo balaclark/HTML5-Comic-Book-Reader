@@ -15,9 +15,10 @@ build:
 	@cp lib/vendor/pixastic/pixastic.worker.control.js comicbook/js/pixastic
 	@cp lib/vendor/pixastic/license-gpl-3.0.txt comicbook/js/pixastic
 	@cp lib/vendor/pixastic/license-mpl.txt comicbook/js/pixastic
-	@./node_modules/.bin/uglifyjs -nc comicbook/js/comicbook.js > comicbook/js/comicbook.min.js
+	@./node_modules/.bin/uglifyjs comicbook/js/comicbook.js --compress --mangle --screw-ie8 --output comicbook.min.js --source-map comicbook/js/comicbook.min.js.map --source-map-root ./
 	@echo "Compiling CSS..."
 	@cat fonts/icomoon-toolbar/style.css css/reset.css css/styles.css css/toolbar.css > comicbook/comicbook.css
+	@./node_modules/.bin/cssmin comicbook/comicbook.css > comicbook/comicbook.min.css
 	@echo "Copying assets..."
 	@cp -r css/img comicbook/img
 	@cp -r icons/1_Desktop_Icons/icon_128.png comicbook/img
