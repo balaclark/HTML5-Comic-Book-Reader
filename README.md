@@ -17,9 +17,11 @@ Development Install
 Builds require nodejs and npm. Installs have been tested with nodejs 0.10.0, older
 versions may or may not work.
 
-	npm install
-	make
-	make test
+```sh
+npm install
+npm run build
+npm test
+```
 
 Copyright and License
 ---------------------
