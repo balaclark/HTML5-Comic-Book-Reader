@@ -4,8 +4,6 @@
 #
 
 build:
-	@echo "Running jshint..."
-	@./node_modules/.bin/jshint lib/ComicBook.js --config lib/.jshintrc
 	@echo "Compiling Handlebars templates..."
 	@./node_modules/.bin/handlebars templates/*.handlebars -f lib/templates.js
 	@echo "Compiling and minifying javascript..."
@@ -30,17 +28,6 @@ build:
 	@cp -r comicbook examples
 	@echo "Done"
 
-#
-# run jshint & quint tests
-#
-
-test:
-	@./node_modules/.bin/jshint lib/ComicBook.js --config lib/.jshintrc
-	@./node_modules/.bin/jshint lib/tests/unit/*.js --config lib/.jshintrc
-	@node lib/tests/server.js &
-	@./node_modules/.bin/phantomjs lib/tests/phantom.js "http://localhost:3000/lib/tests"
-	@kill -9 `cat lib/tests/pid.txt`
-	@rm lib/tests/pid.txt
 
 #
 # remove prior builds
