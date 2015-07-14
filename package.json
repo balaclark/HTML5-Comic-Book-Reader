@@ -12,7 +12,7 @@
   "scripts": {
     "build": "npm run buildjs ; npm run buildcss",
     "buildcss": "rm -f dist/*.css && cat assets/fonts/icomoon-toolbar/style.css app/css/reset.css app/css/styles.css app/css/toolbar.css > dist/comicbook.css && cssmin dist/comicbook.css > dist/comicbook.min.css",
-    "buildjs": "rm -f dist/*.js && browserify --transform babelify --transform strictify --transform browserify-handlebars app/index.js --debug | exorcist dist/comicbook.js.map > dist/comicbook.js",
+    "buildjs": "rm -f dist/*.js && browserify --transform babelify --transform strictify --transform browserify-handlebars app/index.js --debug | exorcist dist/comicbook.js.map > dist/comicbook.js && uglifyjs --screw-ie8 --compress --mangle --source-map dist/comicbook.min.js.map --source-map-root ./ --output dist/comicbook.min.js -- dist/comicbook.js",
     "pretest": "standard",
     "test": "mochify -R spec --transform babelify --transform strictify --transform browserify-handlebars test/**/*.test.js",
     "test-watch": "mochify --watch -R min --transform babelify --transform browserify-handlebars test/**/*.test.js"
@@ -59,7 +59,6 @@
     "uglify-js": "^2.4.23"
   },
   "dependencies": {
-    "jquery": "^1.11.3",
-    "zepto": "0.0.4"
+    "jquery": "^1.11.3"
   }
 }
