@@ -13,7 +13,8 @@
     "build": "npm run build",
     "buildjs": "rm -f dist/*.js && browserify --transform babelify --transform browserify-handlebars app/index.js --debug | exorcist dist/comicbook.js.map > dist/comicbook.js",
     "pretest": "standard",
-    "test": "mochify --transform babelify --transform browserify-handlebars test/**/*.js"
+    "test": "mochify -R spec --transform babelify --transform browserify-handlebars test/**/*.test.js",
+    "test-watch": "mochify --watch -R min --transform babelify --transform browserify-handlebars test/**/*.test.js"
   },
   "repository": {
     "type": "git",
@@ -28,7 +29,11 @@
   "standard": {
     "global": [
       "describe",
-      "it"
+      "it",
+      "before",
+      "beforeEach",
+      "after",
+      "afterEach"
     ],
     "ignore": [
       "assets",
@@ -45,9 +50,14 @@
     "cssmin": "^0.4.3",
     "exorcist": "^0.4.0",
     "handlebars": "^3.0.3",
+    "jquery": "^1.9.1",
     "mochify": "^2.10.0",
     "phantomjs": "^1.9.17",
     "standard": "^4.5.3",
     "uglify-js": "^2.4.23"
+  },
+  "dependencies": {
+    "jquery": "^1.11.3",
+    "zepto": "0.0.4"
   }
 }
