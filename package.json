@@ -10,10 +10,11 @@
   "homepage": "http://reader.justforcomics.com",
   "author": "Bala Clark <balaclark@gmail.com>",
   "scripts": {
-    "build": "npm run build",
-    "buildjs": "rm -f dist/*.js && browserify --transform babelify --transform browserify-handlebars app/index.js --debug | exorcist dist/comicbook.js.map > dist/comicbook.js",
+    "build": "npm run buildjs ; npm run buildcss",
+    "buildcss": "rm -f dist/*.css && cat assets/fonts/icomoon-toolbar/style.css app/css/reset.css app/css/styles.css app/css/toolbar.css > dist/comicbook.css && cssmin dist/comicbook.css > dist/comicbook.min.css",
+    "buildjs": "rm -f dist/*.js && browserify --transform babelify --transform strictify --transform browserify-handlebars app/index.js --debug | exorcist dist/comicbook.js.map > dist/comicbook.js",
     "pretest": "standard",
-    "test": "mochify -R spec --transform babelify --transform browserify-handlebars test/**/*.test.js",
+    "test": "mochify -R spec --transform babelify --transform strictify --transform browserify-handlebars test/**/*.test.js",
     "test-watch": "mochify --watch -R min --transform babelify --transform browserify-handlebars test/**/*.test.js"
   },
   "repository": {
@@ -28,12 +29,12 @@
   ],
   "standard": {
     "global": [
-      "describe",
-      "it",
+      "after",
+      "afterEach",
       "before",
       "beforeEach",
-      "after",
-      "afterEach"
+      "describe",
+      "it"
     ],
     "ignore": [
       "assets",
@@ -54,6 +55,7 @@
     "mochify": "^2.10.0",
     "phantomjs": "^1.9.17",
     "standard": "^4.5.3",
+    "strictify": "^0.2.0",
     "uglify-js": "^2.4.23"
   },
   "dependencies": {
