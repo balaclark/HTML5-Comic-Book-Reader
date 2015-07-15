@@ -1,4 +1,4 @@
-let assert = require('chai').assert
+let assert = require('assert')
 let LoadIndicator = require('../../app/view/load-indicator')
 
 describe('#loadIndicator()', function () {

@@ -47,7 +47,6 @@
     "babelify": "^6.1.3",
     "browserify": "^10.2.6",
     "browserify-handlebars": "^1.0.0",
-    "chai": "^3.0.0",
     "cssmin": "^0.4.3",
     "exorcist": "^0.4.0",
     "handlebars": "^3.0.3",
