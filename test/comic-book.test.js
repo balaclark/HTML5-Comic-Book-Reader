@@ -12,13 +12,13 @@ describe('ComicBook', function () {
 
   describe('preload images', function () {
 
-    it('should preload all given image srcs and emit preload:image, preload:finish events', function (done) {
+    it('should preload all given image srcs and emit preload:image, preload:finish events', done => {
       let comic = new ComicBook(srcs)
       let loaded = []
 
       comic.on('preload:image', image => loaded.push(image.src))
 
-      comic.on('preload:finish', function () {
+      comic.on('preload:finish', () => {
         assert.deepEqual(loaded, srcs, 'all requested images should have been loaded')
         done()
       })
@@ -30,7 +30,7 @@ describe('ComicBook', function () {
 
     it('should preload images in both directions')
 
-    it('should emit a preload:start event', function (done) {
+    it('should emit a preload:start event', done => {
       let comic = new ComicBook(srcs)
 
       comic.on('preload:start', () => done())
@@ -42,7 +42,7 @@ describe('ComicBook', function () {
 
     it('preload:ready should make sure that double page mode can show two images')
 
-    it('should show the load indicator on preload:start', function (done) {
+    it('should show the load indicator on preload:start', done => {
       let comic = new ComicBook(srcs)
       assert.equal(comic.loadIndicator.el.style.display, 'none')
       comic.loadIndicator.on('show', () => done())

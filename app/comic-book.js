@@ -22,25 +22,26 @@ module.exports = class ComicBook extends EventEmitter {
   }
 
   preload () {
+    let self = this
+
     this.emit('preload:start')
-    this.srcs.forEach(loadImage.bind(this))
+
+    this.srcs.forEach((src, pageIndex) => {
+      let image = new window.Image()
+
+      image.src = src
+      image.onload = setImage
+
+      function setImage () {
+        self.pages.set(pageIndex, this)
+        self.emit('preload:image', this)
+
+        if (self.pages.size === self.srcs.size) {
+          self.emit('preload:finish')
+        }
+      }
+    })
   }
-}
 
-function loadImage (src, pageIndex) {
-  let self = this
-  let image = new window.Image()
-
-  image.src = src
-  image.onload = setImage
-
-  function setImage () {
-    self.pages.set(pageIndex, this)
-    self.emit('preload:image', this)
-
-    if (self.pages.size === self.srcs.size) {
-      self.emit('preload:finish')
-    }
-  }
 }
 
