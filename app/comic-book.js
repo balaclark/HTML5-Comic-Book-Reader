@@ -13,6 +13,12 @@ module.exports = class ComicBook extends EventEmitter {
     this.pages = new Map()
 
     this.loadIndicator = new LoadIndicator()
+
+    this.addEventListeners()
+  }
+
+  addEventListeners () {
+    this.on('preload:start', this.loadIndicator.show.bind(this.loadIndicator))
   }
 
   preload () {

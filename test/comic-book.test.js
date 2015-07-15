@@ -33,10 +33,7 @@ describe('ComicBook', function () {
     it('should emit a preload:start event', function (done) {
       let comic = new ComicBook(srcs)
 
-      comic.on('preload:start', function () {
-        assert(true, 'start event should have been emitted')
-        done()
-      })
+      comic.on('preload:start', () => done())
 
       comic.preload()
     })
@@ -44,5 +41,12 @@ describe('ComicBook', function () {
     it('should emit a preload:ready event')
 
     it('preload:ready should make sure that double page mode can show two images')
+
+    it('should show the load indicator on preload:start', function (done) {
+      let comic = new ComicBook(srcs)
+      assert.equal(comic.loadIndicator.el.style.display, 'none')
+      comic.loadIndicator.on('show', () => done())
+      comic.preload()
+    })
   })
 })
