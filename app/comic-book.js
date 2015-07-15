@@ -3,7 +3,7 @@ let LoadIndicator = require('./view/load-indicator')
 
 module.exports = class ComicBook extends EventEmitter {
 
-  constructor (srcs) {
+  constructor (srcs = []) {
     super()
 
     // requested image srcs

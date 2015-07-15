@@ -34,7 +34,7 @@ describe('ComicBook', function () {
       let comic = new ComicBook(srcs)
 
       comic.on('preload:start', function () {
-        assert(true)
+        assert(true, 'start event should have been emitted')
         done()
       })
 
