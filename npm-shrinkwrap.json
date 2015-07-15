@@ -2525,7 +2525,7 @@
     },
     "watchify": {
       "version": "3.2.3",
-      "from": "watchify@>=3.2.0 <4.0.0",
+      "from": "http://registry.npmjs.org/watchify/-/watchify-3.2.3.tgz",
       "resolved": "http://registry.npmjs.org/watchify/-/watchify-3.2.3.tgz"
     },
     "which": {
