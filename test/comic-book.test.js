@@ -8,9 +8,9 @@ let srcs = [
     'data:image/gif;base64,R0lGODlhAQABAPAAAO7u7v///yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw=='
   ]
 
-describe('ComicBook', function () {
+describe('ComicBook', () => {
 
-  describe('preload images', function () {
+  describe('preload images', () => {
 
     it('should preload all given image srcs and emit preload:image, preload:finish events', done => {
       let comic = new ComicBook(srcs)
