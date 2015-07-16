@@ -1,7 +1,7 @@
 let EventEmitter = require('events').EventEmitter
 let LoadIndicator = require('./view/load-indicator')
 
-module.exports = class ComicBook extends EventEmitter {
+class ComicBook extends EventEmitter {
 
   constructor (srcs = []) {
     super()
@@ -44,4 +44,6 @@ module.exports = class ComicBook extends EventEmitter {
   }
 
 }
+
+module.exports = ComicBook
 

@@ -1,7 +1,7 @@
 let assert = require('assert')
 let LoadIndicator = require('../../app/view/load-indicator')
 
-describe('#loadIndicator()', function () {
+describe('LoadIndicator', function () {
 
   it('should render on init', function () {
     let indicator = new LoadIndicator()

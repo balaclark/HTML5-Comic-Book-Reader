@@ -48,5 +48,8 @@ describe('ComicBook', function () {
       comic.loadIndicator.on('show', () => done())
       comic.preload()
     })
+
+    it('should scroll to the top of the page on page turn')
+
   })
 })
