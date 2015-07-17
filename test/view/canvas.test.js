@@ -1,8 +1,8 @@
 let assert = require('assert')
 let imagediff = require('imagediff')
 let Canvas = require('../../app/view/canvas')
-let makeTestImages = require('../data/image')
-let makeImageFixtures = require('../fixture/image')
+let testImage = require('../data')
+let fixtureImage = require('../fixture')
 
 describe('Canvas', function () {
 
@@ -18,14 +18,14 @@ describe('Canvas', function () {
     assert.doesNotThrow(canvas.drawImage.bind(canvas, image, image), 'Invalid image')
   })
 
-  it('should draw a single page', () => {
+  it('should draw a single page', (done) => {
     let canvas = new Canvas()
-    // TODO refactor how images are generated (do one at a time)
     // TODO update fixture once centering is working again
-    makeTestImages((testImages) => {
-      makeImageFixtures((fixtureImages) => {
-        canvas.drawImage(testImages.portrait1)
-        assert(imagediff.equal(canvas.canvas, fixtureImages.singlePortrait))
+    testImage.portrait1((testImage) => {
+      fixtureImage.singlePortrait((fixtureImage) => {
+        canvas.drawImage(testImage)
+        assert(imagediff.equal(canvas.canvas, fixtureImage, 5))
+        done()
       })
     })
   })

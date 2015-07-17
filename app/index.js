@@ -1,9 +1,20 @@
 // let ComicBook = window.ComicBook = require('./comic-book')
 let Canvas = require('./view/canvas')
-let makeImages = require('../test/data/image')
+let testImages = require('../test/data')
+let fixtureImages = require('../test/fixture')
+let imagediff = require('imagediff')
 
-makeImages((testImages) => {
-  let canvas = new Canvas()
-  canvas.drawImage(testImages.portrait1)
-  document.body.appendChild(canvas.canvas)
+testImages.portrait1((testImage) => {
+  fixtureImages.singlePortrait((fixtureImage) => {
+    let canvas = new Canvas()
+    canvas.drawImage(testImage)
+
+    console.log(imagediff.equal(canvas.canvas, fixtureImage))
+
+    console.log(testImage.width, testImage.height)
+    console.log(fixtureImage.width, fixtureImage.height)
+    console.log(canvas.canvas.width, canvas.canvas.height)
+
+    document.body.appendChild(canvas.canvas)
+  })
 })
