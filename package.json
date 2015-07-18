@@ -14,7 +14,7 @@
     "buildcss": "rm -f dist/*.css && cat assets/fonts/icomoon-toolbar/style.css app/css/reset.css app/css/styles.css app/css/toolbar.css > dist/comicbook.css && cssmin dist/comicbook.css > dist/comicbook.min.css",
     "buildjs": "rm -f dist/*.js && browserify --transform [ babelify --optional runtime ] --transform browserify-handlebars  app/index.js --debug | exorcist dist/comicbook.js.map > dist/comicbook.js && uglifyjs --screw-ie8 --compress --mangle --source-map dist/comicbook.min.js.map --source-map-root ./ --output dist/comicbook.min.js -- dist/comicbook.js",
     "pretest": "standard",
-    "test": "mochify --recursive --reporter spec --transform babelify --transform browserify-handlebars --require babelify/polyfill",
+    "test": "mochify --recursive --reporter spec --transform [ babelify --optional runtime ] --transform browserify-handlebars",
     "test-watch": "mochify --watch --recursive --reporter min --transform [ babelify --optional runtime ] --transform browserify-handlebars",
     "wrap": "rm -f npm-shrinkwrap ; npm prune && npm shrinkwrap"
   },
