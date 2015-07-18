@@ -3,13 +3,22 @@
 'use strict';
 
 var Canvas = require('./view/canvas');
+var canvas = new Canvas({ zoomMode: 'fitWidth' });
+/*
+let image = new window.Image()
+image.onload = () => {
+  canvas.drawImage(image)
+  document.body.appendChild(canvas.canvas)
+}
+image.src = 'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_01.jpg'
+*/
+
 var testImages = require('../test/data');
 var fixtureImages = require('../test/fixture');
 var imagediff = require('imagediff');
 
 testImages.portrait1(function (testImage) {
   fixtureImages.singlePortrait(function (fixtureImage) {
-    var canvas = new Canvas();
     canvas.drawImage(testImage);
 
     console.log(imagediff.equal(canvas.canvas, fixtureImage));
@@ -48,6 +57,11 @@ var _Object$assign = require('babel-runtime/core-js/object/assign')['default'];
 
 var EventEmitter = require('events').EventEmitter;
 
+// TODO replace
+function windowWidth() {
+  return window.innerWidth;
+}
+
 var Canvas = (function (_EventEmitter) {
   _inherits(Canvas, _EventEmitter);
 
@@ -67,79 +81,121 @@ var Canvas = (function (_EventEmitter) {
 
     this.canvas = document.createElement('canvas');
     this.context = this.canvas.getContext('2d');
-
-    this.on('draw:start', this.clearCanvas.bind(this));
   }
 
   _createClass(Canvas, [{
-    key: 'getScale',
-    value: function getScale() {}
-  }, {
-    key: 'fitCanvasToImage',
-    value: function fitCanvasToImage(image) {
-      // make sure the canvas is always at least full screen, even if the page is more narrow than the screen
-      this.canvas.width = this.canvas.width < window.innerWidth ? window.innerWidth : this.canvas.width;
-      this.canvas.height = this.canvas.height < window.innerHeight ? window.innerHeight : this.canvas.height;
-    }
-  }, {
-    key: 'getDimensions',
-    value: function getDimensions(image) {
-      var dimensions = {
-        width: image.width,
-        height: image.height
-      };
-      return dimensions;
-    }
-  }, {
-    key: 'getOffset',
-    value: function getOffset(dimensions) {
-      var offset = {
-        width: 0,
-        height: 0
-      };
+    key: 'drawImage',
+    value: function drawImage(page, page2) {
+      this.emit('draw:start');
+
+      if (!(page instanceof window.Image) || this.options.doublePage && !(page2 instanceof window.Image)) {
+        throw new Error('Invalid image');
+      }
+
+      var zoomScale = undefined;
+      var offsetW = 0;
+      var offsetH = 0;
+      var width = page.width;
+      var height = page.height;
+      var doublePageMode = this.options.doublePage;
+      var canvasWidth = undefined;
+      var canvasHeight = undefined;
+      var pageWidth = undefined;
+      var pageHeight = undefined;
+
+      // reset the canvas to stop duplicate pages showing
+      this.canvas.width = 0;
+      this.canvas.height = 0;
+
+      // show double page spreads on a single page
+      var isDoublePageSpread = page2 && (page.width > page.height || page2.width > page2.height) && doublePageMode;
+
+      if (isDoublePageSpread) doublePageMode = false;
+
+      if (doublePageMode) {
+
+        // for double page spreads, factor in the width of both pages
+        if (typeof page2 === 'object') {
+          width += page2.width
+          // if this is the last page and there is no page2, still keep the canvas wide
+          ;
+        } else {
+          width += width;
+        }
+      }
+
+      // update the page this.scale if a non manual mode has been chosen
+      switch (this.options.zoomMode) {
+
+        case 'manual':
+          document.body.style.overflowX = 'auto';
+          zoomScale = doublePageMode ? this.scale * 2 : this.scale;
+          break;
+
+        case 'fitWidth':
+          document.body.style.overflowX = 'hidden';
+
+          // this.scale up if the window is wider than the page, scale down if the window
+          // is narrower than the page
+          zoomScale = windowWidth() > width ? (windowWidth() - width) / windowWidth() + 1 : windowWidth() / width;
+          this.scale = zoomScale;
+          break;
+
+        case 'fitWindow':
+          document.body.style.overflowX = 'hidden';
+
+          var widthScale = windowWidth() > width ? (windowWidth() - width) / windowWidth() + 1 // scale up if the window is wider than the page
+          : windowWidth() / width; // scale down if the window is narrower than the page
+          var windowHeight = window.innerHeight;
+          var heightScale = windowHeight > height ? (windowHeight - height) / windowHeight + 1 // scale up if the window is wider than the page
+          : windowHeight / height; // scale down if the window is narrower than the page
+
+          zoomScale = widthScale > heightScale ? heightScale : widthScale;
+          this.scale = zoomScale;
+          break;
+      }
+
+      canvasWidth = page.width * zoomScale;
+      canvasHeight = page.height * zoomScale;
+
+      pageWidth = this.options.zoomMode === 'manual' ? page.width * this.scale : canvasWidth;
+      pageHeight = this.options.zoomMode === 'manual' ? page.height * this.scale : canvasHeight;
+
+      canvasHeight = pageHeight;
+
+      // make sure the canvas is always at least full screen, even if the page is narrower than the screen
+      this.canvas.width = canvasWidth < windowWidth() ? windowWidth() : canvasWidth;
+      this.canvas.height = canvasHeight < window.innerHeight ? window.innerHeight : canvasHeight;
 
       // always keep pages centered
       if (this.options.zoomMode === 'manual' || this.options.zoomMode === 'fitWindow') {
 
         // work out a horizontal position
-        if (this.canvas.width < window.innerWidth) {
-          offset.width = (window.innerWidth - dimensions.width) / 2;
+        if (canvasWidth < windowWidth()) {
+          offsetW = (windowWidth() - pageWidth) / 2;
           if (this.options.doublePage) {
-            offset.width = offset.width - dimensions.width / 2;
+            offsetW = offsetW - pageWidth / 2;
           }
         }
 
         // work out a vertical position
-        if (this.canvas.height < window.innerHeight) {
-          offset.height = (window.innerHeight - dimensions.height) / 2;
+        if (canvasHeight < window.innerHeight) {
+          offsetH = (window.innerHeight - pageHeight) / 2;
         }
       }
 
-      return offset;
-    }
-  }, {
-    key: 'clearCanvas',
-    value: function clearCanvas() {
-      this.canvas.width = 0;
-      this.canvas.height = 0;
-    }
-  }, {
-    key: 'drawImage',
-    value: function drawImage(image, image2) {
-      this.emit('draw:start');
-
-      if (!(image instanceof window.Image) || this.options.doublePage && !(image2 instanceof window.Image)) {
-        throw new Error('Invalid image');
+      // in manga double page mode reverse the page(s)
+      if (this.options.manga && this.options.doublePage && typeof page2 === 'object') {
+        var tmpPage = page;
+        var tmpPage2 = page2;
+        page = tmpPage2;
+        page2 = tmpPage;
       }
 
-      this.fitCanvasToImage();
-
-      var dimensions = this.getDimensions(image);
-      var offset = this.getOffset(dimensions);
-
-      this.context.drawImage(image, offset.width, offset.height, dimensions.width, dimensions.height);
-      if (this.options.doublePage && image2) {
-        this.context.drawImage(image2, dimensions.width + offset.width, offset.height, dimensions.width, dimensions.height);
+      // draw the page(s)
+      this.context.drawImage(page, offsetW, offsetH, pageWidth, pageHeight);
+      if (this.options.doublePage && typeof page2 === 'object') {
+        this.context.drawImage(page2, pageWidth + offsetW, offsetH, pageWidth, pageHeight);
       }
 
       this.emit('draw:finish');

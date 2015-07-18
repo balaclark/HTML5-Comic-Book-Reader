@@ -1,12 +1,21 @@
 // let ComicBook = window.ComicBook = require('./comic-book')
 let Canvas = require('./view/canvas')
+let canvas = new Canvas({ zoomMode: 'fitWidth' })
+/*
+let image = new window.Image()
+image.onload = () => {
+  canvas.drawImage(image)
+  document.body.appendChild(canvas.canvas)
+}
+image.src = 'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_01.jpg'
+*/
+
 let testImages = require('../test/data')
 let fixtureImages = require('../test/fixture')
 let imagediff = require('imagediff')
 
 testImages.portrait1((testImage) => {
   fixtureImages.singlePortrait((fixtureImage) => {
-    let canvas = new Canvas()
     canvas.drawImage(testImage)
 
     console.log(imagediff.equal(canvas.canvas, fixtureImage))
@@ -18,3 +27,4 @@ testImages.portrait1((testImage) => {
     document.body.appendChild(canvas.canvas)
   })
 })
+

@@ -20,7 +20,6 @@ describe('Canvas', function () {
 
   it('should draw a single page', (done) => {
     let canvas = new Canvas()
-    // TODO update fixture once centering is working again
     testImage.portrait1((testImage) => {
       fixtureImage.singlePortrait((fixtureImage) => {
         canvas.drawImage(testImage)
