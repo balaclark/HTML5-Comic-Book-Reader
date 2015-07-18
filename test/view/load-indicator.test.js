@@ -6,7 +6,7 @@ describe('LoadIndicator', function () {
   it('should render on init', function () {
     let indicator = new LoadIndicator()
     assert.equal(indicator.el.outerHTML
-      , '<div id="cb-loading-overlay" class="cb-control" style="display: none; "></div>')
+      , '<div id="cb-loading-overlay" style="display: none; "></div>')
   })
 
   it('should show', function () {

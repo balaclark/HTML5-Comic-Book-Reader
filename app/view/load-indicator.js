@@ -1,6 +1,4 @@
 let EventEmitter = require('events').EventEmitter
-let $ = require('jquery')
-let template = require('./template/load-indicator.handlebars')
 
 class LoadIndicator extends EventEmitter {
   constructor () {
@@ -9,18 +7,18 @@ class LoadIndicator extends EventEmitter {
   }
 
   render () {
-    this.$el = $(template())
-    this.el = this.$el.get(0)
+    this.el = document.createElement('div')
+    this.el.id = 'cb-loading-overlay'
     return this
   }
 
   show () {
-    this.$el.show()
+    this.el.style.display = 'block'
     this.emit('show', this)
   }
 
   hide () {
-    this.$el.hide()
+    this.el.style.display = 'none'
     this.emit('hide', this)
   }
 }

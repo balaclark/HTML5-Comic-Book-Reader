@@ -59,7 +59,5 @@
     "uglify-js": "^2.4.23",
     "watchify": "http://registry.npmjs.org/watchify/-/watchify-3.2.3.tgz"
   },
-  "dependencies": {
-    "jquery": "^2.1.4"
-  }
+  "dependencies": {}
 }
