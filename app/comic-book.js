@@ -1,5 +1,6 @@
 let EventEmitter = require('events').EventEmitter
 let LoadIndicator = require('./view/load-indicator')
+let ProgressBar = require('./view/progress-bar')
 
 class ComicBook extends EventEmitter {
 
@@ -13,12 +14,22 @@ class ComicBook extends EventEmitter {
     this.pages = new Map()
 
     this.loadIndicator = new LoadIndicator()
+    this.progressBar = new ProgressBar()
 
     this.addEventListeners()
   }
 
   addEventListeners () {
     this.on('preload:start', this.loadIndicator.show.bind(this.loadIndicator))
+    this.on('preload:start', this.progressBar.show.bind(this.progressBar))
+    this.on('preload:image', this.updateProgressBar.bind(this))
+    this.on('preload:finish', this.progressBar.hide.bind(this.progressBar))
+  }
+
+  render () {
+    this.el = document.createElement('div')
+    this.el.appendChild(this.progressBar.el)
+    return this
   }
 
   preload () {
@@ -43,6 +54,10 @@ class ComicBook extends EventEmitter {
     })
   }
 
+  updateProgressBar () {
+    let percentage = Math.floor((this.pages.size / this.srcs.size) * 100)
+    this.progressBar.update(percentage)
+  }
 }
 
 module.exports = ComicBook
