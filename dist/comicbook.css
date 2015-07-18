@@ -230,6 +230,11 @@ body:not(.mobile) .navigate:hover {
 	opacity: 0.8;
 	background: #000 url("img/loading.gif") no-repeat center;
 	box-shadow: none;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
 }
 
 #cb-status {

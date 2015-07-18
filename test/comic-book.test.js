@@ -39,7 +39,18 @@ describe('ComicBook', () => {
       comic.preload()
     })
 
-    it('should emit a preload:ready event')
+    it('should emit a preload:ready event', done => {
+      let comic = new ComicBook(srcs)
+
+      comic.preloadBuffer = 2
+
+      comic.on('preload:ready', () => {
+        assert.equal(comic.pages.size, 2)
+        done()
+      })
+
+      comic.preload()
+    })
 
     it('preload:ready should make sure that double page mode can show two images')
 

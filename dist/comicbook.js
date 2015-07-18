@@ -9,11 +9,10 @@ var _createClass = require('babel-runtime/helpers/create-class')['default'];
 
 var _classCallCheck = require('babel-runtime/helpers/class-call-check')['default'];
 
-var _Set = require('babel-runtime/core-js/set')['default'];
-
 var _Map = require('babel-runtime/core-js/map')['default'];
 
 var EventEmitter = require('events').EventEmitter;
+var Canvas = require('./view/canvas');
 var LoadIndicator = require('./view/load-indicator');
 var ProgressBar = require('./view/progress-bar');
 
@@ -28,11 +27,15 @@ var ComicBook = (function (_EventEmitter) {
     _get(Object.getPrototypeOf(ComicBook.prototype), 'constructor', this).call(this);
 
     // requested image srcs
-    this.srcs = new _Set(srcs);
+    this.srcs = srcs;
 
     // loaded image objects
     this.pages = new _Map();
 
+    this.currentPageIndex = 0;
+    this.preloadBuffer = 4;
+
+    this.canvas = new Canvas();
     this.loadIndicator = new LoadIndicator();
     this.progressBar = new ProgressBar();
 
@@ -45,19 +48,23 @@ var ComicBook = (function (_EventEmitter) {
       this.on('preload:start', this.loadIndicator.show.bind(this.loadIndicator));
       this.on('preload:start', this.progressBar.show.bind(this.progressBar));
       this.on('preload:image', this.updateProgressBar.bind(this));
+      this.on('preload:ready', this.loadIndicator.hide.bind(this.loadIndicator));
+      this.on('preload:ready', this.drawPage.bind(this));
       this.on('preload:finish', this.progressBar.hide.bind(this.progressBar));
     }
   }, {
     key: 'render',
     value: function render() {
       this.el = document.createElement('div');
+      this.el.appendChild(this.canvas.canvas);
       this.el.appendChild(this.progressBar.el);
+      this.el.appendChild(this.loadIndicator.el);
       return this;
     }
   }, {
     key: 'preload',
     value: function preload() {
-      var self = this;
+      var _this = this;
 
       this.emit('preload:start');
 
@@ -65,14 +72,18 @@ var ComicBook = (function (_EventEmitter) {
         var image = new window.Image();
 
         image.src = src;
-        image.onload = setImage;
+        image.onload = setImage.bind(_this, image, pageIndex);
 
-        function setImage() {
-          self.pages.set(pageIndex, this);
-          self.emit('preload:image', this);
+        function setImage(image, index) {
+          this.pages.set(index, image);
+          this.emit('preload:image', image);
 
-          if (self.pages.size === self.srcs.size) {
-            self.emit('preload:finish');
+          if (this.pages.size === this.preloadBuffer) {
+            this.emit('preload:ready');
+          }
+
+          if (this.pages.size === this.srcs.length) {
+            this.emit('preload:finish');
           }
         }
       });
@@ -80,8 +91,14 @@ var ComicBook = (function (_EventEmitter) {
   }, {
     key: 'updateProgressBar',
     value: function updateProgressBar() {
-      var percentage = Math.floor(this.pages.size / this.srcs.size * 100);
+      var percentage = Math.floor(this.pages.size / this.srcs.length * 100);
       this.progressBar.update(percentage);
+    }
+  }, {
+    key: 'drawPage',
+    value: function drawPage() {
+      var page = this.pages.get(this.currentPageIndex);
+      this.canvas.drawImage(page);
     }
   }]);
 
@@ -90,7 +107,7 @@ var ComicBook = (function (_EventEmitter) {
 
 module.exports = ComicBook;
 
-},{"./view/load-indicator":3,"./view/progress-bar":4,"babel-runtime/core-js/map":6,"babel-runtime/core-js/set":10,"babel-runtime/helpers/class-call-check":11,"babel-runtime/helpers/create-class":12,"babel-runtime/helpers/get":13,"babel-runtime/helpers/inherits":14,"events":51}],2:[function(require,module,exports){
+},{"./view/canvas":3,"./view/load-indicator":4,"./view/progress-bar":5,"babel-runtime/core-js/map":7,"babel-runtime/helpers/class-call-check":12,"babel-runtime/helpers/create-class":13,"babel-runtime/helpers/get":14,"babel-runtime/helpers/inherits":15,"events":53}],2:[function(require,module,exports){
 'use strict';
 
 var ComicBook = window.ComicBook = require('./comic-book');
@@ -102,6 +119,171 @@ document.addEventListener('DOMContentLoaded', function () {
 }, false);
 
 },{"./comic-book":1}],3:[function(require,module,exports){
+'use strict';
+
+var _get = require('babel-runtime/helpers/get')['default'];
+
+var _inherits = require('babel-runtime/helpers/inherits')['default'];
+
+var _createClass = require('babel-runtime/helpers/create-class')['default'];
+
+var _classCallCheck = require('babel-runtime/helpers/class-call-check')['default'];
+
+var _Object$assign = require('babel-runtime/core-js/object/assign')['default'];
+
+var EventEmitter = require('events').EventEmitter;
+
+// TODO replace
+function windowWidth() {
+  return window.innerWidth;
+}
+
+var Canvas = (function (_EventEmitter) {
+  _inherits(Canvas, _EventEmitter);
+
+  function Canvas(options) {
+    _classCallCheck(this, Canvas);
+
+    _get(Object.getPrototypeOf(Canvas.prototype), 'constructor', this).call(this);
+
+    this.options = _Object$assign({
+      // fitWidth, fitWindow, manua
+      zoomMode: 'fitWidth',
+      // ltr, rtl
+      readDirection: 'ltr',
+      // should two pages be rendered at a time?
+      doublePage: false
+    }, options);
+
+    this.canvas = document.createElement('canvas');
+    this.context = this.canvas.getContext('2d');
+  }
+
+  _createClass(Canvas, [{
+    key: 'drawImage',
+    value: function drawImage(page, page2) {
+      this.emit('draw:start');
+
+      if (!(page instanceof window.Image) || this.options.doublePage && !(page2 instanceof window.Image)) {
+        throw new Error('Invalid image');
+      }
+
+      var zoomScale = undefined;
+      var offsetW = 0;
+      var offsetH = 0;
+      var width = page.width;
+      var height = page.height;
+      var doublePageMode = this.options.doublePage;
+      var canvasWidth = undefined;
+      var canvasHeight = undefined;
+      var pageWidth = undefined;
+      var pageHeight = undefined;
+
+      // reset the canvas to stop duplicate pages showing
+      this.canvas.width = 0;
+      this.canvas.height = 0;
+
+      // show double page spreads on a single page
+      var isDoublePageSpread = page2 && (page.width > page.height || page2.width > page2.height) && doublePageMode;
+
+      if (isDoublePageSpread) doublePageMode = false;
+
+      if (doublePageMode) {
+
+        // for double page spreads, factor in the width of both pages
+        if (typeof page2 === 'object') {
+          width += page2.width
+          // if this is the last page and there is no page2, still keep the canvas wide
+          ;
+        } else {
+          width += width;
+        }
+      }
+
+      // update the page this.scale if a non manual mode has been chosen
+      switch (this.options.zoomMode) {
+
+        case 'manual':
+          document.body.style.overflowX = 'auto';
+          zoomScale = doublePageMode ? this.scale * 2 : this.scale;
+          break;
+
+        case 'fitWidth':
+          document.body.style.overflowX = 'hidden';
+
+          // this.scale up if the window is wider than the page, scale down if the window
+          // is narrower than the page
+          zoomScale = windowWidth() > width ? (windowWidth() - width) / windowWidth() + 1 : windowWidth() / width;
+          this.scale = zoomScale;
+          break;
+
+        case 'fitWindow':
+          document.body.style.overflowX = 'hidden';
+
+          var widthScale = windowWidth() > width ? (windowWidth() - width) / windowWidth() + 1 // scale up if the window is wider than the page
+          : windowWidth() / width; // scale down if the window is narrower than the page
+          var windowHeight = window.innerHeight;
+          var heightScale = windowHeight > height ? (windowHeight - height) / windowHeight + 1 // scale up if the window is wider than the page
+          : windowHeight / height; // scale down if the window is narrower than the page
+
+          zoomScale = widthScale > heightScale ? heightScale : widthScale;
+          this.scale = zoomScale;
+          break;
+      }
+
+      canvasWidth = page.width * zoomScale;
+      canvasHeight = page.height * zoomScale;
+
+      pageWidth = this.options.zoomMode === 'manual' ? page.width * this.scale : canvasWidth;
+      pageHeight = this.options.zoomMode === 'manual' ? page.height * this.scale : canvasHeight;
+
+      canvasHeight = pageHeight;
+
+      // make sure the canvas is always at least full screen, even if the page is narrower than the screen
+      this.canvas.width = canvasWidth < windowWidth() ? windowWidth() : canvasWidth;
+      this.canvas.height = canvasHeight < window.innerHeight ? window.innerHeight : canvasHeight;
+
+      // always keep pages centered
+      if (this.options.zoomMode === 'manual' || this.options.zoomMode === 'fitWindow') {
+
+        // work out a horizontal position
+        if (canvasWidth < windowWidth()) {
+          offsetW = (windowWidth() - pageWidth) / 2;
+          if (this.options.doublePage) {
+            offsetW = offsetW - pageWidth / 2;
+          }
+        }
+
+        // work out a vertical position
+        if (canvasHeight < window.innerHeight) {
+          offsetH = (window.innerHeight - pageHeight) / 2;
+        }
+      }
+
+      // in manga double page mode reverse the page(s)
+      if (this.options.manga && this.options.doublePage && typeof page2 === 'object') {
+        var tmpPage = page;
+        var tmpPage2 = page2;
+        page = tmpPage2;
+        page2 = tmpPage;
+      }
+
+      // draw the page(s)
+      this.context.drawImage(page, offsetW, offsetH, pageWidth, pageHeight);
+      if (this.options.doublePage && typeof page2 === 'object') {
+        this.context.drawImage(page2, pageWidth + offsetW, offsetH, pageWidth, pageHeight);
+      }
+
+      this.emit('draw:finish');
+    }
+  }]);
+
+  return Canvas;
+})(EventEmitter);
+
+module.exports = Canvas;
+
+},{"babel-runtime/core-js/object/assign":8,"babel-runtime/helpers/class-call-check":12,"babel-runtime/helpers/create-class":13,"babel-runtime/helpers/get":14,"babel-runtime/helpers/inherits":15,"events":53}],4:[function(require,module,exports){
 'use strict';
 
 var _get = require('babel-runtime/helpers/get')['default'];
@@ -150,7 +332,7 @@ var LoadIndicator = (function (_EventEmitter) {
 
 module.exports = LoadIndicator;
 
-},{"babel-runtime/helpers/class-call-check":11,"babel-runtime/helpers/create-class":12,"babel-runtime/helpers/get":13,"babel-runtime/helpers/inherits":14,"events":51}],4:[function(require,module,exports){
+},{"babel-runtime/helpers/class-call-check":12,"babel-runtime/helpers/create-class":13,"babel-runtime/helpers/get":14,"babel-runtime/helpers/inherits":15,"events":53}],5:[function(require,module,exports){
 'use strict';
 
 var _createClass = require('babel-runtime/helpers/create-class')['default'];
@@ -197,21 +379,21 @@ var ProgressBar = (function () {
 
 module.exports = ProgressBar;
 
-},{"./template/progress-bar.handlebars":5,"babel-runtime/helpers/class-call-check":11,"babel-runtime/helpers/create-class":12}],5:[function(require,module,exports){
+},{"./template/progress-bar.handlebars":6,"babel-runtime/helpers/class-call-check":12,"babel-runtime/helpers/create-class":13}],6:[function(require,module,exports){
 var templater = require("handlebars/runtime")["default"].template;module.exports = templater({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     return "<div id=\"cb-status\" class=\"cb-control\">\n	<div id=\"cb-progress-bar\">\n		<div class=\"progressbar-value\"></div>\n	</div>\n</div>\n";
 },"useData":true});
-},{"handlebars/runtime":59}],6:[function(require,module,exports){
+},{"handlebars/runtime":61}],7:[function(require,module,exports){
 module.exports = { "default": require("core-js/library/fn/map"), __esModule: true };
-},{"core-js/library/fn/map":15}],7:[function(require,module,exports){
+},{"core-js/library/fn/map":16}],8:[function(require,module,exports){
+module.exports = { "default": require("core-js/library/fn/object/assign"), __esModule: true };
+},{"core-js/library/fn/object/assign":17}],9:[function(require,module,exports){
 module.exports = { "default": require("core-js/library/fn/object/create"), __esModule: true };
-},{"core-js/library/fn/object/create":16}],8:[function(require,module,exports){
+},{"core-js/library/fn/object/create":18}],10:[function(require,module,exports){
 module.exports = { "default": require("core-js/library/fn/object/define-property"), __esModule: true };
-},{"core-js/library/fn/object/define-property":17}],9:[function(require,module,exports){
+},{"core-js/library/fn/object/define-property":19}],11:[function(require,module,exports){
 module.exports = { "default": require("core-js/library/fn/object/get-own-property-descriptor"), __esModule: true };
-},{"core-js/library/fn/object/get-own-property-descriptor":18}],10:[function(require,module,exports){
-module.exports = { "default": require("core-js/library/fn/set"), __esModule: true };
-},{"core-js/library/fn/set":19}],11:[function(require,module,exports){
+},{"core-js/library/fn/object/get-own-property-descriptor":20}],12:[function(require,module,exports){
 "use strict";
 
 exports["default"] = function (instance, Constructor) {
@@ -221,7 +403,7 @@ exports["default"] = function (instance, Constructor) {
 };
 
 exports.__esModule = true;
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 "use strict";
 
 var _Object$defineProperty = require("babel-runtime/core-js/object/define-property")["default"];
@@ -246,7 +428,7 @@ exports["default"] = (function () {
 })();
 
 exports.__esModule = true;
-},{"babel-runtime/core-js/object/define-property":8}],13:[function(require,module,exports){
+},{"babel-runtime/core-js/object/define-property":10}],14:[function(require,module,exports){
 "use strict";
 
 var _Object$getOwnPropertyDescriptor = require("babel-runtime/core-js/object/get-own-property-descriptor")["default"];
@@ -291,7 +473,7 @@ exports["default"] = function get(_x, _x2, _x3) {
 };
 
 exports.__esModule = true;
-},{"babel-runtime/core-js/object/get-own-property-descriptor":9}],14:[function(require,module,exports){
+},{"babel-runtime/core-js/object/get-own-property-descriptor":11}],15:[function(require,module,exports){
 "use strict";
 
 var _Object$create = require("babel-runtime/core-js/object/create")["default"];
@@ -313,37 +495,33 @@ exports["default"] = function (subClass, superClass) {
 };
 
 exports.__esModule = true;
-},{"babel-runtime/core-js/object/create":7}],15:[function(require,module,exports){
+},{"babel-runtime/core-js/object/create":9}],16:[function(require,module,exports){
 require('../modules/es6.object.to-string');
 require('../modules/es6.string.iterator');
 require('../modules/web.dom.iterable');
 require('../modules/es6.map');
 require('../modules/es7.map.to-json');
 module.exports = require('../modules/$').core.Map;
-},{"../modules/$":33,"../modules/es6.map":43,"../modules/es6.object.to-string":45,"../modules/es6.string.iterator":47,"../modules/es7.map.to-json":48,"../modules/web.dom.iterable":50}],16:[function(require,module,exports){
+},{"../modules/$":36,"../modules/es6.map":46,"../modules/es6.object.to-string":49,"../modules/es6.string.iterator":50,"../modules/es7.map.to-json":51,"../modules/web.dom.iterable":52}],17:[function(require,module,exports){
+require('../../modules/es6.object.assign');
+module.exports = require('../../modules/$').core.Object.assign;
+},{"../../modules/$":36,"../../modules/es6.object.assign":47}],18:[function(require,module,exports){
 var $ = require('../../modules/$');
 module.exports = function create(P, D){
   return $.create(P, D);
 };
-},{"../../modules/$":33}],17:[function(require,module,exports){
+},{"../../modules/$":36}],19:[function(require,module,exports){
 var $ = require('../../modules/$');
 module.exports = function defineProperty(it, key, desc){
   return $.setDesc(it, key, desc);
 };
-},{"../../modules/$":33}],18:[function(require,module,exports){
+},{"../../modules/$":36}],20:[function(require,module,exports){
 var $ = require('../../modules/$');
 require('../../modules/es6.object.statics-accept-primitives');
 module.exports = function getOwnPropertyDescriptor(it, key){
   return $.getDesc(it, key);
 };
-},{"../../modules/$":33,"../../modules/es6.object.statics-accept-primitives":44}],19:[function(require,module,exports){
-require('../modules/es6.object.to-string');
-require('../modules/es6.string.iterator');
-require('../modules/web.dom.iterable');
-require('../modules/es6.set');
-require('../modules/es7.set.to-json');
-module.exports = require('../modules/$').core.Set;
-},{"../modules/$":33,"../modules/es6.object.to-string":45,"../modules/es6.set":46,"../modules/es6.string.iterator":47,"../modules/es7.set.to-json":49,"../modules/web.dom.iterable":50}],20:[function(require,module,exports){
+},{"../../modules/$":36,"../../modules/es6.object.statics-accept-primitives":48}],21:[function(require,module,exports){
 var $ = require('./$');
 function assert(condition, msg1, msg2){
   if(!condition)throw TypeError(msg2 ? msg1 + msg2 : msg1);
@@ -362,7 +540,27 @@ assert.inst = function(it, Constructor, name){
   return it;
 };
 module.exports = assert;
-},{"./$":33}],21:[function(require,module,exports){
+},{"./$":36}],22:[function(require,module,exports){
+var $        = require('./$')
+  , enumKeys = require('./$.enum-keys');
+// 19.1.2.1 Object.assign(target, source, ...)
+/* eslint-disable no-unused-vars */
+module.exports = Object.assign || function assign(target, source){
+/* eslint-enable no-unused-vars */
+  var T = Object($.assertDefined(target))
+    , l = arguments.length
+    , i = 1;
+  while(l > i){
+    var S      = $.ES5Object(arguments[i++])
+      , keys   = enumKeys(S)
+      , length = keys.length
+      , j      = 0
+      , key;
+    while(length > j)T[key = keys[j++]] = S[key];
+  }
+  return T;
+};
+},{"./$":36,"./$.enum-keys":29}],23:[function(require,module,exports){
 var $        = require('./$')
   , TAG      = require('./$.wks')('toStringTag')
   , toString = {}.toString;
@@ -378,7 +576,7 @@ cof.set = function(it, tag, stat){
   if(it && !$.has(it = stat ? it : it.prototype, TAG))$.hide(it, TAG, tag);
 };
 module.exports = cof;
-},{"./$":33,"./$.wks":41}],22:[function(require,module,exports){
+},{"./$":36,"./$.wks":44}],24:[function(require,module,exports){
 'use strict';
 var $        = require('./$')
   , ctx      = require('./$.ctx')
@@ -534,7 +732,7 @@ module.exports = {
     }, IS_MAP ? 'entries' : 'values' , !IS_MAP, true);
   }
 };
-},{"./$":33,"./$.assert":20,"./$.ctx":25,"./$.for-of":27,"./$.iter":32,"./$.iter-define":31,"./$.mix":34,"./$.uid":39}],23:[function(require,module,exports){
+},{"./$":36,"./$.assert":21,"./$.ctx":27,"./$.for-of":30,"./$.iter":35,"./$.iter-define":34,"./$.mix":37,"./$.uid":42}],25:[function(require,module,exports){
 // https://github.com/DavidBruant/Map-Set.prototype.toJSON
 var $def  = require('./$.def')
   , forOf = require('./$.for-of');
@@ -547,7 +745,7 @@ module.exports = function(NAME){
     }
   });
 };
-},{"./$.def":26,"./$.for-of":27}],24:[function(require,module,exports){
+},{"./$.def":28,"./$.for-of":30}],26:[function(require,module,exports){
 'use strict';
 var $     = require('./$')
   , $def  = require('./$.def')
@@ -597,7 +795,7 @@ module.exports = function(NAME, wrapper, methods, common, IS_MAP, IS_WEAK){
 
   return C;
 };
-},{"./$":33,"./$.assert":20,"./$.cof":21,"./$.def":26,"./$.for-of":27,"./$.iter":32,"./$.mix":34,"./$.species":37,"./$.uid":39}],25:[function(require,module,exports){
+},{"./$":36,"./$.assert":21,"./$.cof":23,"./$.def":28,"./$.for-of":30,"./$.iter":35,"./$.mix":37,"./$.species":40,"./$.uid":42}],27:[function(require,module,exports){
 // Optional / simple context binding
 var assertFunction = require('./$.assert').fn;
 module.exports = function(fn, that, length){
@@ -617,7 +815,7 @@ module.exports = function(fn, that, length){
       return fn.apply(that, arguments);
     };
 };
-},{"./$.assert":20}],26:[function(require,module,exports){
+},{"./$.assert":21}],28:[function(require,module,exports){
 var $          = require('./$')
   , global     = $.g
   , core       = $.core
@@ -666,7 +864,18 @@ function $def(type, name, source){
   }
 }
 module.exports = $def;
-},{"./$":33}],27:[function(require,module,exports){
+},{"./$":36}],29:[function(require,module,exports){
+var $ = require('./$');
+module.exports = function(it){
+  var keys       = $.getKeys(it)
+    , getDesc    = $.getDesc
+    , getSymbols = $.getSymbols;
+  if(getSymbols)$.each.call(getSymbols(it), function(key){
+    if(getDesc(it, key).enumerable)keys.push(key);
+  });
+  return keys;
+};
+},{"./$":36}],30:[function(require,module,exports){
 var ctx  = require('./$.ctx')
   , get  = require('./$.iter').get
   , call = require('./$.iter-call');
@@ -680,13 +889,13 @@ module.exports = function(iterable, entries, fn, that){
     }
   }
 };
-},{"./$.ctx":25,"./$.iter":32,"./$.iter-call":30}],28:[function(require,module,exports){
+},{"./$.ctx":27,"./$.iter":35,"./$.iter-call":33}],31:[function(require,module,exports){
 module.exports = function($){
   $.FW   = false;
   $.path = $.core;
   return $;
 };
-},{}],29:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 // fallback for IE11 buggy Object.getOwnPropertyNames with iframe and window
 var $ = require('./$')
   , toString = {}.toString
@@ -707,7 +916,7 @@ module.exports.get = function getOwnPropertyNames(it){
   if(windowNames && toString.call(it) == '[object Window]')return getWindowNames(it);
   return getNames($.toObject(it));
 };
-},{"./$":33}],30:[function(require,module,exports){
+},{"./$":36}],33:[function(require,module,exports){
 var assertObject = require('./$.assert').obj;
 function close(iterator){
   var ret = iterator['return'];
@@ -723,7 +932,7 @@ function call(iterator, fn, value, entries){
 }
 call.close = close;
 module.exports = call;
-},{"./$.assert":20}],31:[function(require,module,exports){
+},{"./$.assert":21}],34:[function(require,module,exports){
 var $def            = require('./$.def')
   , $redef          = require('./$.redef')
   , $               = require('./$')
@@ -774,7 +983,7 @@ module.exports = function(Base, NAME, Constructor, next, DEFAULT, IS_SET, FORCE)
     } else $def($def.P + $def.F * $iter.BUGGY, NAME, methods);
   }
 };
-},{"./$":33,"./$.cof":21,"./$.def":26,"./$.iter":32,"./$.redef":35,"./$.wks":41}],32:[function(require,module,exports){
+},{"./$":36,"./$.cof":23,"./$.def":28,"./$.iter":35,"./$.redef":38,"./$.wks":44}],35:[function(require,module,exports){
 'use strict';
 var $                 = require('./$')
   , cof               = require('./$.cof')
@@ -824,7 +1033,7 @@ module.exports = {
     cof.set(Constructor, NAME + ' Iterator');
   }
 };
-},{"./$":33,"./$.assert":20,"./$.cof":21,"./$.shared":36,"./$.wks":41}],33:[function(require,module,exports){
+},{"./$":36,"./$.assert":21,"./$.cof":23,"./$.shared":39,"./$.wks":44}],36:[function(require,module,exports){
 'use strict';
 var global = typeof self != 'undefined' ? self : Function('return this')()
   , core   = {}
@@ -921,22 +1130,22 @@ var $ = module.exports = require('./$.fw')({
 /* eslint-disable no-undef */
 if(typeof __e != 'undefined')__e = core;
 if(typeof __g != 'undefined')__g = global;
-},{"./$.fw":28}],34:[function(require,module,exports){
+},{"./$.fw":31}],37:[function(require,module,exports){
 var $redef = require('./$.redef');
 module.exports = function(target, src){
   for(var key in src)$redef(target, key, src[key]);
   return target;
 };
-},{"./$.redef":35}],35:[function(require,module,exports){
+},{"./$.redef":38}],38:[function(require,module,exports){
 module.exports = require('./$').hide;
-},{"./$":33}],36:[function(require,module,exports){
+},{"./$":36}],39:[function(require,module,exports){
 var $      = require('./$')
   , SHARED = '__core-js_shared__'
   , store  = $.g[SHARED] || ($.g[SHARED] = {});
 module.exports = function(key){
   return store[key] || (store[key] = {});
 };
-},{"./$":33}],37:[function(require,module,exports){
+},{"./$":36}],40:[function(require,module,exports){
 var $       = require('./$')
   , SPECIES = require('./$.wks')('species');
 module.exports = function(C){
@@ -945,7 +1154,7 @@ module.exports = function(C){
     get: $.that
   });
 };
-},{"./$":33,"./$.wks":41}],38:[function(require,module,exports){
+},{"./$":36,"./$.wks":44}],41:[function(require,module,exports){
 // true  -> String#at
 // false -> String#codePointAt
 var $ = require('./$');
@@ -963,23 +1172,23 @@ module.exports = function(TO_STRING){
         : TO_STRING ? s.slice(i, i + 2) : (a - 0xd800 << 10) + (b - 0xdc00) + 0x10000;
   };
 };
-},{"./$":33}],39:[function(require,module,exports){
+},{"./$":36}],42:[function(require,module,exports){
 var sid = 0;
 function uid(key){
   return 'Symbol('.concat(key === undefined ? '' : key, ')_', (++sid + Math.random()).toString(36));
 }
 uid.safe = require('./$').g.Symbol || uid;
 module.exports = uid;
-},{"./$":33}],40:[function(require,module,exports){
+},{"./$":36}],43:[function(require,module,exports){
 module.exports = function(){ /* empty */ };
-},{}],41:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 var global = require('./$').g
   , store  = require('./$.shared')('wks');
 module.exports = function(name){
   return store[name] || (store[name] =
     global.Symbol && global.Symbol[name] || require('./$.uid').safe('Symbol.' + name));
 };
-},{"./$":33,"./$.shared":36,"./$.uid":39}],42:[function(require,module,exports){
+},{"./$":36,"./$.shared":39,"./$.uid":42}],45:[function(require,module,exports){
 var $          = require('./$')
   , setUnscope = require('./$.unscope')
   , ITER       = require('./$.uid').safe('iter')
@@ -1014,7 +1223,7 @@ Iterators.Arguments = Iterators.Array;
 setUnscope('keys');
 setUnscope('values');
 setUnscope('entries');
-},{"./$":33,"./$.iter":32,"./$.iter-define":31,"./$.uid":39,"./$.unscope":40}],43:[function(require,module,exports){
+},{"./$":36,"./$.iter":35,"./$.iter-define":34,"./$.uid":42,"./$.unscope":43}],46:[function(require,module,exports){
 'use strict';
 var strong = require('./$.collection-strong');
 
@@ -1032,7 +1241,11 @@ require('./$.collection')('Map', function(get){
     return strong.def(this, key === 0 ? 0 : key, value);
   }
 }, strong, true);
-},{"./$.collection":24,"./$.collection-strong":22}],44:[function(require,module,exports){
+},{"./$.collection":26,"./$.collection-strong":24}],47:[function(require,module,exports){
+// 19.1.3.1 Object.assign(target, source)
+var $def = require('./$.def');
+$def($def.S, 'Object', {assign: require('./$.assign')});
+},{"./$.assign":22,"./$.def":28}],48:[function(require,module,exports){
 var $        = require('./$')
   , $def     = require('./$.def')
   , isObject = $.isObject
@@ -1069,7 +1282,7 @@ $.each.call(('freeze,seal,preventExtensions,isFrozen,isSealed,isExtensible,' +
   }
   $def($def.S + $def.F * forced, 'Object', method);
 });
-},{"./$":33,"./$.def":26,"./$.get-names":29}],45:[function(require,module,exports){
+},{"./$":36,"./$.def":28,"./$.get-names":32}],49:[function(require,module,exports){
 'use strict';
 // 19.1.3.6 Object.prototype.toString()
 var cof = require('./$.cof')
@@ -1080,20 +1293,7 @@ if(require('./$').FW && cof(tmp) != 'z'){
     return '[object ' + cof.classof(this) + ']';
   }, true);
 }
-},{"./$":33,"./$.cof":21,"./$.redef":35,"./$.wks":41}],46:[function(require,module,exports){
-'use strict';
-var strong = require('./$.collection-strong');
-
-// 23.2 Set Objects
-require('./$.collection')('Set', function(get){
-  return function Set(){ return get(this, arguments[0]); };
-}, {
-  // 23.2.3.1 Set.prototype.add(value)
-  add: function add(value){
-    return strong.def(this, value = value === 0 ? 0 : value, value);
-  }
-}, strong);
-},{"./$.collection":24,"./$.collection-strong":22}],47:[function(require,module,exports){
+},{"./$":36,"./$.cof":23,"./$.redef":38,"./$.wks":44}],50:[function(require,module,exports){
 var set   = require('./$').set
   , $at   = require('./$.string-at')(true)
   , ITER  = require('./$.uid').safe('iter')
@@ -1114,13 +1314,10 @@ require('./$.iter-define')(String, 'String', function(iterated){
   iter.i += point.length;
   return step(0, point);
 });
-},{"./$":33,"./$.iter":32,"./$.iter-define":31,"./$.string-at":38,"./$.uid":39}],48:[function(require,module,exports){
+},{"./$":36,"./$.iter":35,"./$.iter-define":34,"./$.string-at":41,"./$.uid":42}],51:[function(require,module,exports){
 // https://github.com/DavidBruant/Map-Set.prototype.toJSON
 require('./$.collection-to-json')('Map');
-},{"./$.collection-to-json":23}],49:[function(require,module,exports){
-// https://github.com/DavidBruant/Map-Set.prototype.toJSON
-require('./$.collection-to-json')('Set');
-},{"./$.collection-to-json":23}],50:[function(require,module,exports){
+},{"./$.collection-to-json":25}],52:[function(require,module,exports){
 require('./es6.array.iterator');
 var $           = require('./$')
   , Iterators   = require('./$.iter').Iterators
@@ -1135,7 +1332,7 @@ if($.FW){
   if(HTC && !(ITERATOR in HTCProto))$.hide(HTCProto, ITERATOR, ArrayValues);
 }
 Iterators.NodeList = Iterators.HTMLCollection = ArrayValues;
-},{"./$":33,"./$.iter":32,"./$.wks":41,"./es6.array.iterator":42}],51:[function(require,module,exports){
+},{"./$":36,"./$.iter":35,"./$.wks":44,"./es6.array.iterator":45}],53:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -1438,7 +1635,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],52:[function(require,module,exports){
+},{}],54:[function(require,module,exports){
 'use strict';
 
 var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
@@ -1499,7 +1696,7 @@ inst['default'] = inst;
 
 exports['default'] = inst;
 module.exports = exports['default'];
-},{"./handlebars/base":53,"./handlebars/exception":54,"./handlebars/no-conflict":55,"./handlebars/runtime":56,"./handlebars/safe-string":57,"./handlebars/utils":58}],53:[function(require,module,exports){
+},{"./handlebars/base":55,"./handlebars/exception":56,"./handlebars/no-conflict":57,"./handlebars/runtime":58,"./handlebars/safe-string":59,"./handlebars/utils":60}],55:[function(require,module,exports){
 'use strict';
 
 var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
@@ -1773,7 +1970,7 @@ function createFrame(object) {
 }
 
 /* [args, ]options */
-},{"./exception":54,"./utils":58}],54:[function(require,module,exports){
+},{"./exception":56,"./utils":60}],56:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -1812,7 +2009,7 @@ Exception.prototype = new Error();
 
 exports['default'] = Exception;
 module.exports = exports['default'];
-},{}],55:[function(require,module,exports){
+},{}],57:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -1834,7 +2031,7 @@ exports['default'] = function (Handlebars) {
 module.exports = exports['default'];
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],56:[function(require,module,exports){
+},{}],58:[function(require,module,exports){
 'use strict';
 
 var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
@@ -2067,7 +2264,7 @@ function initData(context, data) {
   }
   return data;
 }
-},{"./base":53,"./exception":54,"./utils":58}],57:[function(require,module,exports){
+},{"./base":55,"./exception":56,"./utils":60}],59:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -2082,7 +2279,7 @@ SafeString.prototype.toString = SafeString.prototype.toHTML = function () {
 
 exports['default'] = SafeString;
 module.exports = exports['default'];
-},{}],58:[function(require,module,exports){
+},{}],60:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -2197,10 +2394,10 @@ function blockParams(params, ids) {
 function appendContextPath(contextPath, id) {
   return (contextPath ? contextPath + '.' : '') + id;
 }
-},{}],59:[function(require,module,exports){
+},{}],61:[function(require,module,exports){
 // Create a simple path alias to allow browserify to resolve
 // the runtime on a supported path.
 module.exports = require('./dist/cjs/handlebars.runtime')['default'];
 
-},{"./dist/cjs/handlebars.runtime":52}]},{},[2])
+},{"./dist/cjs/handlebars.runtime":54}]},{},[2])
 //# sourceMappingURL=comicbook.js.map
