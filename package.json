@@ -43,6 +43,9 @@
     ],
     "parser": "babel-eslint"
   },
+  "dependencies": {
+    "lodash.debounce": "^3.1.1"
+  },
   "devDependencies": {
     "babel-eslint": "^3.1.23",
     "babel-runtime": "^5.7.0",
@@ -54,14 +57,13 @@
     "handlebars": "^3.0.3",
     "imagediff": "^1.0.8",
     "mochify": "^2.10.0",
-    "phantomjs": "^1.9.17",
     "sinon": "^1.15.4",
     "spy": "^0.1.3",
     "standard": "^4.5.3",
     "uglify-js": "^2.4.23",
     "watchify": "http://registry.npmjs.org/watchify/-/watchify-3.2.3.tgz"
   },
-  "dependencies": {
-    "lodash.debounce": "^3.1.1"
+  "peerDependencies": {
+    "phantomjs": "^1.9.17"
   }
 }
