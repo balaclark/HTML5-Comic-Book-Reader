@@ -95,8 +95,176 @@ describe('ComicBook', () => {
         done()
       })
     })
+
+    it('should restart the preload from whatever page is requested')
   })
 
-  it('should scroll to the top of the page on page turn')
+  describe('draw', () => {
+
+    describe('drawPage()', () => {
+
+      it('should draw a given page', () => {
+        let comic = new ComicBook(srcs)
+
+        comic.canvas.drawImage = spy()
+
+        comic.drawPage(1)
+
+        assert.equal(comic.canvas.drawImage.callCount, 1)
+        assert(comic.canvas.drawImage.calls[0].calledWith(comic.pages.get(1)))
+      })
+
+      it('should default to drawing the current page', () => {
+        let comic = new ComicBook(srcs)
+
+        comic.canvas.drawImage = spy()
+        comic.currentPageIndex = 2
+
+        comic.drawPage()
+
+        assert.equal(comic.canvas.drawImage.callCount, 1)
+        assert(comic.canvas.drawImage.calls[0].calledWith(comic.pages.get(2)))
+      })
+
+      it('should update the current page index after drawing', () => {
+        let comic = new ComicBook(srcs)
+
+        comic.canvas.drawImage = () => {}
+        comic.currentPageIndex = 1
+
+        comic.drawPage(2)
+
+        assert.equal(comic.currentPageIndex, 2)
+      })
+
+      it('should ignore "Invalid image" exceptions and not draw the page when they occur', () => {
+        let comic = new ComicBook(srcs)
+
+        comic.currentPageIndex = 1
+
+        assert.doesNotThrow(comic.drawPage.bind(comic, 666))
+        assert.equal(comic.currentPageIndex, 1)
+      })
+
+      it('should throw all other exceptions and not draw the page when they occur', () => {
+        let comic = new ComicBook(srcs)
+
+        comic.canvas.drawImage = () => { throw new Error('Some other exception') }
+
+        assert.throws(comic.drawPage.bind(comic))
+      })
+
+      it('should draw two pages in double page mode')
+    })
+
+    describe('drawNextPage()', () => {
+
+      it('should draw the next page', done => {
+        let comic = new ComicBook(srcs)
+
+        comic.drawPage = spy()
+        comic.currentPageIndex = 1
+
+        comic.on('preload:finish', () => {
+          comic.drawNextPage()
+          assert(comic.drawPage.calls[0].calledWith(2))
+          done()
+        })
+
+        comic.preload()
+      })
+
+      it('should draw the next page in double page mode', done => {
+        let comic = new ComicBook(srcs)
+
+        comic.drawPage = spy()
+        comic.currentPageIndex = 1
+        comic.options.doublePage = true
+
+        comic.on('preload:finish', () => {
+          comic.drawNextPage()
+          assert(comic.drawPage.calls[0].calledWith(3))
+          done()
+        })
+
+        comic.preload()
+      })
+
+      it('should handle the final page of double page mode being a single page', done => {
+        let comic = new ComicBook(srcs)
+
+        comic.drawPage = spy()
+        comic.currentPageIndex = 3
+        comic.options.doublePage = true
+
+        comic.on('preload:finish', () => {
+          comic.drawNextPage()
+          assert(comic.drawPage.calls[0].calledWith(4))
+          done()
+        })
+
+        comic.preload()
+      })
+    })
+
+    describe('drawPreviousPage()', () => {
+
+      it('should draw the previous page', done => {
+        let comic = new ComicBook(srcs)
+
+        comic.drawPage = spy()
+        comic.currentPageIndex = 2
+
+        comic.on('preload:finish', () => {
+          comic.drawPreviousPage()
+          assert(comic.drawPage.calls[0].calledWith(1))
+          done()
+        })
+
+        comic.preload()
+      })
+
+      it('should draw the previous page in double page mode', done => {
+        let comic = new ComicBook(srcs)
+
+        comic.drawPage = spy()
+        comic.currentPageIndex = 3
+        comic.options.doublePage = true
+
+        comic.on('preload:finish', () => {
+          comic.drawPreviousPage()
+          assert(comic.drawPage.calls[0].calledWith(1))
+          done()
+        })
+
+        comic.preload()
+      })
+
+      it('should handle navigating back to an uneven first page in double page mode', done => {
+        let comic = new ComicBook(srcs)
+
+        comic.drawPage = spy()
+        comic.currentPageIndex = 1
+        comic.options.doublePage = true
+
+        comic.on('preload:finish', () => {
+          comic.drawPreviousPage()
+          assert(comic.drawPage.calls[0].calledWith(0))
+          done()
+        })
+
+        comic.preload()
+      })
+
+      it('should reverse image order in double page manga mode')
+    })
+  })
+
+  describe('routing', () => {
+
+    it('should scroll to the top of the page on page turn')
+
+    it('should render a page when the route changes')
+  })
 
 })

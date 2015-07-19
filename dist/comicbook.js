@@ -9,6 +9,8 @@ var _createClass = require('babel-runtime/helpers/create-class')['default'];
 
 var _classCallCheck = require('babel-runtime/helpers/class-call-check')['default'];
 
+var _Object$assign = require('babel-runtime/core-js/object/assign')['default'];
+
 var _Map = require('babel-runtime/core-js/map')['default'];
 
 var EventEmitter = require('events').EventEmitter;
@@ -19,12 +21,18 @@ var ProgressBar = require('./view/progress-bar');
 var ComicBook = (function (_EventEmitter) {
   _inherits(ComicBook, _EventEmitter);
 
-  function ComicBook() {
-    var srcs = arguments.length <= 0 || arguments[0] === undefined ? [] : arguments[0];
+  function ComicBook(srcs, options) {
+    if (srcs === undefined) srcs = [];
 
     _classCallCheck(this, ComicBook);
 
     _get(Object.getPrototypeOf(ComicBook.prototype), 'constructor', this).call(this);
+
+    this.options = _Object$assign({
+      // manga mode
+      rtl: false,
+      doublePage: false
+    }, options);
 
     // requested image srcs
     this.srcs = srcs;
@@ -32,8 +40,10 @@ var ComicBook = (function (_EventEmitter) {
     // loaded image objects
     this.pages = new _Map();
 
-    this.currentPageIndex = 0;
     this.preloadBuffer = 4;
+
+    // TODO move this logic into the router
+    this.currentPageIndex = 0;
 
     this.canvas = new Canvas();
     this.loadIndicator = new LoadIndicator();
@@ -96,9 +106,34 @@ var ComicBook = (function (_EventEmitter) {
     }
   }, {
     key: 'drawPage',
-    value: function drawPage() {
-      var page = this.pages.get(this.currentPageIndex);
-      this.canvas.drawImage(page);
+    value: function drawPage(pageIndex) {
+      if (typeof pageIndex !== 'number') pageIndex = this.currentPageIndex;
+      var page = this.pages.get(pageIndex);
+
+      try {
+        this.canvas.drawImage(page);
+        this.currentPageIndex = pageIndex;
+      } catch (e) {
+        if (e.message !== 'Invalid image') throw e;
+      }
+    }
+  }, {
+    key: 'drawNextPage',
+    value: function drawNextPage() {
+      var increment = this.options.doublePage ? 2 : 1;
+      var index = this.currentPageIndex + increment;
+      if (index >= this.pages.size) {
+        index = this.pages.size - 1;
+      }
+      this.drawPage(index);
+    }
+  }, {
+    key: 'drawPreviousPage',
+    value: function drawPreviousPage() {
+      var increment = this.options.doublePage ? 2 : 1;
+      var index = this.currentPageIndex - increment;
+      if (index < 0) index = 0;
+      this.drawPage(index);
     }
   }]);
 
@@ -107,15 +142,17 @@ var ComicBook = (function (_EventEmitter) {
 
 module.exports = ComicBook;
 
-},{"./view/canvas":3,"./view/load-indicator":4,"./view/progress-bar":5,"babel-runtime/core-js/map":7,"babel-runtime/helpers/class-call-check":12,"babel-runtime/helpers/create-class":13,"babel-runtime/helpers/get":14,"babel-runtime/helpers/inherits":15,"events":53}],2:[function(require,module,exports){
+},{"./view/canvas":3,"./view/load-indicator":4,"./view/progress-bar":5,"babel-runtime/core-js/map":7,"babel-runtime/core-js/object/assign":8,"babel-runtime/helpers/class-call-check":12,"babel-runtime/helpers/create-class":13,"babel-runtime/helpers/get":14,"babel-runtime/helpers/inherits":15,"events":53}],2:[function(require,module,exports){
 'use strict';
 
 var ComicBook = window.ComicBook = require('./comic-book');
-var comic = new ComicBook(['https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_00.jpg', 'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_01.jpg', 'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_02.jpg', 'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_03.jpg', 'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_04.jpg', 'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_05.jpg', 'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_06.jpg', 'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_07.jpg', 'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_08.jpg', 'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_09.jpg', 'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_10.jpg']);
+var comic = window.comic = new ComicBook(['https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_00.jpg', 'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_01.jpg', 'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_02.jpg', 'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_03.jpg', 'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_04.jpg', 'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_05.jpg', 'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_06.jpg', 'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_07.jpg', 'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_08.jpg', 'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_09.jpg', 'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_10.jpg']);
+
+comic.preload();
+comic.render();
 
 document.addEventListener('DOMContentLoaded', function () {
-  document.body.appendChild(comic.render().el);
-  comic.preload();
+  document.body.appendChild(comic.el);
 }, false);
 
 },{"./comic-book":1}],3:[function(require,module,exports){
@@ -149,8 +186,8 @@ var Canvas = (function (_EventEmitter) {
     this.options = _Object$assign({
       // fitWidth, fitWindow, manua
       zoomMode: 'fitWidth',
-      // ltr, rtl
-      readDirection: 'ltr',
+      // manga mode
+      rtl: false,
       // should two pages be rendered at a time?
       doublePage: false
     }, options);
@@ -261,7 +298,7 @@ var Canvas = (function (_EventEmitter) {
       }
 
       // in manga double page mode reverse the page(s)
-      if (this.options.manga && this.options.doublePage && typeof page2 === 'object') {
+      if (this.options.rtl && this.options.doublePage && typeof page2 === 'object') {
         var tmpPage = page;
         var tmpPage2 = page2;
         page = tmpPage2;

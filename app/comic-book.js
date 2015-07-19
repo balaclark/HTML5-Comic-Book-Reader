@@ -5,8 +5,14 @@ let ProgressBar = require('./view/progress-bar')
 
 class ComicBook extends EventEmitter {
 
-  constructor (srcs = []) {
+  constructor (srcs = [], options) {
     super()
+
+    this.options = Object.assign({
+      // manga mode
+      rtl: false,
+      doublePage: false
+    }, options)
 
     // requested image srcs
     this.srcs = srcs
@@ -72,17 +78,32 @@ class ComicBook extends EventEmitter {
     this.progressBar.update(percentage)
   }
 
-  drawPage () {
-    let page = this.pages.get(this.currentPageIndex)
-    this.canvas.drawImage(page)
+  drawPage (pageIndex) {
+    if (typeof pageIndex !== 'number') pageIndex = this.currentPageIndex
+    let page = this.pages.get(pageIndex)
+
+    try {
+      this.canvas.drawImage(page)
+      this.currentPageIndex = pageIndex
+    } catch (e) {
+      if (e.message !== 'Invalid image') throw e
+    }
   }
 
   drawNextPage () {
-    // TODO
+    let increment = this.options.doublePage ? 2 : 1
+    let index = this.currentPageIndex + increment
+    if (index >= this.pages.size) {
+      index = this.pages.size - 1
+    }
+    this.drawPage(index)
   }
 
-  drawPrevioousPage () {
-    // TODO
+  drawPreviousPage () {
+    let increment = this.options.doublePage ? 2 : 1
+    let index = this.currentPageIndex - increment
+    if (index < 0) index = 0
+    this.drawPage(index)
   }
 }
 

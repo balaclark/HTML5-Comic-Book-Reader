@@ -1,5 +1,5 @@
 let ComicBook = window.ComicBook = require('./comic-book')
-let comic = new ComicBook([
+let comic = window.comic = new ComicBook([
   'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_00.jpg',
   'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_01.jpg',
   'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_02.jpg',
@@ -13,8 +13,10 @@ let comic = new ComicBook([
   'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_10.jpg'
 ])
 
+comic.preload()
+comic.render()
+
 document.addEventListener('DOMContentLoaded', () => {
-  document.body.appendChild(comic.render().el)
-  comic.preload()
+  document.body.appendChild(comic.el)
 }, false)
 

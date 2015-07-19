@@ -13,8 +13,8 @@ class Canvas extends EventEmitter {
     this.options = Object.assign({
       // fitWidth, fitWindow, manua
       zoomMode: 'fitWidth',
-      // ltr, rtl
-      readDirection: 'ltr',
+      // manga mode
+      rtl: false,
       // should two pages be rendered at a time?
       doublePage: false
     }, options)
@@ -126,7 +126,7 @@ class Canvas extends EventEmitter {
     }
 
     // in manga double page mode reverse the page(s)
-    if (this.options.manga && this.options.doublePage && typeof page2 === 'object') {
+    if (this.options.rtl && this.options.doublePage && typeof page2 === 'object') {
       let tmpPage = page
       let tmpPage2 = page2
       page = tmpPage2
