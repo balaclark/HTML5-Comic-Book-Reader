@@ -1484,6 +1484,11 @@
       "from": "lodash.assign@>=3.0.0 <4.0.0",
       "resolved": "http://registry.npmjs.org/lodash.assign/-/lodash.assign-3.2.0.tgz"
     },
+    "lodash.debounce": {
+      "version": "3.1.1",
+      "from": "lodash.debounce@*",
+      "resolved": "http://registry.npmjs.org/lodash.debounce/-/lodash.debounce-3.1.1.tgz"
+    },
     "lodash.isarguments": {
       "version": "3.0.4",
       "from": "lodash.isarguments@>=3.0.0 <4.0.0",

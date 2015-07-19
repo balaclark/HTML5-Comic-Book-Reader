@@ -1,4 +1,5 @@
 let ComicBook = window.ComicBook = require('./comic-book')
+let debounce = require('lodash.debounce')
 let srcs = [
   'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_00.jpg',
   'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_01.jpg',
@@ -15,6 +16,8 @@ let srcs = [
 let comic = window.comic = new ComicBook(srcs, { doublePage: true })
 
 comic.render()
+
+window.addEventListener('resize', debounce(comic.drawPage.bind(comic), 100))
 
 document.addEventListener('DOMContentLoaded', () => {
   document.body.appendChild(comic.el)
