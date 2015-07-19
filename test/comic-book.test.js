@@ -96,6 +96,22 @@ describe('ComicBook', () => {
       })
     })
 
+    // FIXME
+    it.skip('should be able to run without reloading already loaded images', done => {
+      let comic = new ComicBook(srcs)
+      let loaded = 0
+
+      comic.on('preload:image', (image) => loaded++)
+      comic.on('preload:finish', () => {
+        assert.equal(loaded, srcs.length)
+        done()
+      })
+
+      comic.preload()
+      comic.preload()
+      comic.preload()
+    })
+
     it('should restart the preload from whatever page is requested')
   })
 
@@ -103,9 +119,15 @@ describe('ComicBook', () => {
 
     describe('drawPage()', () => {
 
-      it('should draw a given page', () => {
-        let comic = new ComicBook(srcs)
+      let comic
 
+      beforeEach(done => {
+        comic = new ComicBook(srcs)
+        comic.on('preload:finish', done)
+        comic.preload()
+      })
+
+      it('should draw a given page', () => {
         comic.canvas.drawImage = sinon.spy()
 
         comic.drawPage(1)
@@ -115,8 +137,6 @@ describe('ComicBook', () => {
       })
 
       it('should default to drawing the current page', () => {
-        let comic = new ComicBook(srcs)
-
         comic.canvas.drawImage = sinon.spy()
         comic.currentPageIndex = 2
 
@@ -127,8 +147,6 @@ describe('ComicBook', () => {
       })
 
       it('should update the current page index after drawing', () => {
-        let comic = new ComicBook(srcs)
-
         comic.canvas.drawImage = () => {}
         comic.currentPageIndex = 1
 
@@ -138,8 +156,6 @@ describe('ComicBook', () => {
       })
 
       it('should ignore "Invalid image" exceptions and not draw the page when they occur', () => {
-        let comic = new ComicBook(srcs)
-
         comic.currentPageIndex = 1
 
         assert.doesNotThrow(comic.drawPage.bind(comic, 666))
@@ -147,8 +163,6 @@ describe('ComicBook', () => {
       })
 
       it('should throw all other exceptions and not draw the page when they occur', () => {
-        let comic = new ComicBook(srcs)
-
         comic.canvas.drawImage = () => { throw new Error('Some other exception') }
 
         assert.throws(comic.drawPage.bind(comic))

@@ -65,10 +65,12 @@ var ComicBook = (function (_EventEmitter) {
   }, {
     key: 'render',
     value: function render() {
+      this.pageRendered = false;
       this.el = document.createElement('div');
       this.el.appendChild(this.canvas.canvas);
       this.el.appendChild(this.progressBar.el);
       this.el.appendChild(this.loadIndicator.el);
+      this.drawPage();
       return this;
     }
   }, {
@@ -79,6 +81,10 @@ var ComicBook = (function (_EventEmitter) {
       this.emit('preload:start');
 
       this.srcs.forEach(function (src, pageIndex) {
+
+        // allow preload to be run multiple times without duplicating requests
+        if (_this.pages.has(pageIndex)) return;
+
         var image = new window.Image();
 
         image.src = src;
@@ -88,7 +94,7 @@ var ComicBook = (function (_EventEmitter) {
           this.pages.set(index, image);
           this.emit('preload:image', image);
 
-          if (this.pages.size === this.preloadBuffer) {
+          if (this.pages.size >= this.preloadBuffer && !this.pageRendered) {
             this.emit('preload:ready');
           }
 
@@ -108,7 +114,13 @@ var ComicBook = (function (_EventEmitter) {
     key: 'drawPage',
     value: function drawPage(pageIndex) {
       if (typeof pageIndex !== 'number') pageIndex = this.currentPageIndex;
-      var args = [this.pages.get(pageIndex)];
+
+      var page = this.pages.get(pageIndex);
+
+      // if the requested image hasn't been loaded yet, force another preload run
+      if (!page) return this.preload();
+
+      var args = [page];
 
       if (this.options.doublePage) {
         args.push(this.pages.get(pageIndex + 1));
@@ -123,6 +135,7 @@ var ComicBook = (function (_EventEmitter) {
       try {
         this.canvas.drawImage.apply(this.canvas, args);
         this.currentPageIndex = pageIndex;
+        this.pageRendered = true;
       } catch (e) {
         if (e.message !== 'Invalid image') throw e;
       }
@@ -159,7 +172,6 @@ var ComicBook = window.ComicBook = require('./comic-book');
 var srcs = ['https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_00.jpg', 'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_01.jpg', 'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_02.jpg', 'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_03.jpg', 'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_04.jpg', 'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_05.jpg', 'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_06.jpg', 'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_07.jpg', 'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_08.jpg', 'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_09.jpg', 'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_10.jpg'];
 var comic = window.comic = new ComicBook(srcs, { doublePage: true });
 
-comic.preload();
 comic.render();
 
 document.addEventListener('DOMContentLoaded', function () {

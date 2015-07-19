@@ -14,7 +14,6 @@ let srcs = [
 ]
 let comic = window.comic = new ComicBook(srcs, { doublePage: true })
 
-comic.preload()
 comic.render()
 
 document.addEventListener('DOMContentLoaded', () => {

@@ -42,10 +42,12 @@ class ComicBook extends EventEmitter {
   }
 
   render () {
+    this.pageRendered = false
     this.el = document.createElement('div')
     this.el.appendChild(this.canvas.canvas)
     this.el.appendChild(this.progressBar.el)
     this.el.appendChild(this.loadIndicator.el)
+    this.drawPage()
     return this
   }
 
@@ -53,6 +55,10 @@ class ComicBook extends EventEmitter {
     this.emit('preload:start')
 
     this.srcs.forEach((src, pageIndex) => {
+
+      // allow preload to be run multiple times without duplicating requests
+      if (this.pages.has(pageIndex)) return
+
       let image = new window.Image()
 
       image.src = src
@@ -62,7 +68,7 @@ class ComicBook extends EventEmitter {
         this.pages.set(index, image)
         this.emit('preload:image', image)
 
-        if (this.pages.size === this.preloadBuffer) {
+        if (this.pages.size >= this.preloadBuffer && !this.pageRendered) {
           this.emit('preload:ready')
         }
 
@@ -80,7 +86,13 @@ class ComicBook extends EventEmitter {
 
   drawPage (pageIndex) {
     if (typeof pageIndex !== 'number') pageIndex = this.currentPageIndex
-    let args = [ this.pages.get(pageIndex) ]
+
+    let page = this.pages.get(pageIndex)
+
+    // if the requested image hasn't been loaded yet, force another preload run
+    if (!page) return this.preload()
+
+    let args = [ page ]
 
     if (this.options.doublePage) {
       args.push(this.pages.get(pageIndex + 1))
@@ -95,6 +107,7 @@ class ComicBook extends EventEmitter {
     try {
       this.canvas.drawImage.apply(this.canvas, args)
       this.currentPageIndex = pageIndex
+      this.pageRendered = true
     } catch (e) {
       if (e.message !== 'Invalid image') throw e
     }
