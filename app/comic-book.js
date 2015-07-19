@@ -80,10 +80,20 @@ class ComicBook extends EventEmitter {
 
   drawPage (pageIndex) {
     if (typeof pageIndex !== 'number') pageIndex = this.currentPageIndex
-    let page = this.pages.get(pageIndex)
+    let args = [ this.pages.get(pageIndex) ]
+
+    if (this.options.doublePage) {
+      args.push(this.pages.get(pageIndex + 1))
+
+      if (this.options.rtl) {
+        args.reverse()
+      }
+    }
+
+    args.push(this.options)
 
     try {
-      this.canvas.drawImage(page)
+      this.canvas.drawImage.apply(this.canvas, args)
       this.currentPageIndex = pageIndex
     } catch (e) {
       if (e.message !== 'Invalid image') throw e

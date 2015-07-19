@@ -12,10 +12,8 @@ describe('Canvas', function () {
 
     assert.throws(canvas.drawImage, 'Invalid image')
 
-    canvas.options.doublePage = true
-
-    assert.throws(canvas.drawImage.bind(canvas, image), 'Invalid image')
-    assert.doesNotThrow(canvas.drawImage.bind(canvas, image, image), 'Invalid image')
+    assert.throws(canvas.drawImage.bind(canvas, image, { doublePage: true }), 'Invalid image')
+    assert.doesNotThrow(canvas.drawImage.bind(canvas, image, image, { doublePage: true }), 'Invalid image')
   })
 
   // TODO fix test

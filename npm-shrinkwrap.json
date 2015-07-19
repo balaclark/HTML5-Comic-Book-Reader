@@ -1019,6 +1019,11 @@
         }
       }
     },
+    "formatio": {
+      "version": "1.1.1",
+      "from": "formatio@1.1.1",
+      "resolved": "http://registry.npmjs.org/formatio/-/formatio-1.1.1.tgz"
+    },
     "fs-extra": {
       "version": "0.18.4",
       "from": "fs-extra@>=0.18.0 <0.19.0",
@@ -1513,6 +1518,11 @@
       "version": "3.6.1",
       "from": "lodash.restparam@>=3.0.0 <4.0.0",
       "resolved": "http://registry.npmjs.org/lodash.restparam/-/lodash.restparam-3.6.1.tgz"
+    },
+    "lolex": {
+      "version": "1.1.0",
+      "from": "lolex@1.1.0",
+      "resolved": "http://registry.npmjs.org/lolex/-/lolex-1.1.0.tgz"
     },
     "lru-cache": {
       "version": "2.6.5",
@@ -2161,6 +2171,11 @@
       "version": "2.5.3",
       "from": "rx@>=2.4.3 <3.0.0",
       "resolved": "http://registry.npmjs.org/rx/-/rx-2.5.3.tgz"
+    },
+    "samsam": {
+      "version": "1.1.2",
+      "from": "samsam@1.1.2",
+      "resolved": "http://registry.npmjs.org/samsam/-/samsam-1.1.2.tgz"
     },
     "saucelabs": {
       "version": "0.1.1",

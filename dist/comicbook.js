@@ -108,10 +108,20 @@ var ComicBook = (function (_EventEmitter) {
     key: 'drawPage',
     value: function drawPage(pageIndex) {
       if (typeof pageIndex !== 'number') pageIndex = this.currentPageIndex;
-      var page = this.pages.get(pageIndex);
+      var args = [this.pages.get(pageIndex)];
+
+      if (this.options.doublePage) {
+        args.push(this.pages.get(pageIndex + 1));
+
+        if (this.options.rtl) {
+          args.reverse();
+        }
+      }
+
+      args.push(this.options);
 
       try {
-        this.canvas.drawImage(page);
+        this.canvas.drawImage.apply(this.canvas, args);
         this.currentPageIndex = pageIndex;
       } catch (e) {
         if (e.message !== 'Invalid image') throw e;
@@ -146,7 +156,8 @@ module.exports = ComicBook;
 'use strict';
 
 var ComicBook = window.ComicBook = require('./comic-book');
-var comic = window.comic = new ComicBook(['https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_00.jpg', 'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_01.jpg', 'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_02.jpg', 'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_03.jpg', 'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_04.jpg', 'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_05.jpg', 'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_06.jpg', 'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_07.jpg', 'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_08.jpg', 'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_09.jpg', 'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_10.jpg']);
+var srcs = ['https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_00.jpg', 'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_01.jpg', 'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_02.jpg', 'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_03.jpg', 'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_04.jpg', 'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_05.jpg', 'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_06.jpg', 'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_07.jpg', 'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_08.jpg', 'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_09.jpg', 'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_10.jpg'];
+var comic = window.comic = new ComicBook(srcs, { doublePage: true });
 
 comic.preload();
 comic.render();
@@ -182,16 +193,6 @@ var Canvas = (function (_EventEmitter) {
     _classCallCheck(this, Canvas);
 
     _get(Object.getPrototypeOf(Canvas.prototype), 'constructor', this).call(this);
-
-    this.options = _Object$assign({
-      // fitWidth, fitWindow, manua
-      zoomMode: 'fitWidth',
-      // manga mode
-      rtl: false,
-      // should two pages be rendered at a time?
-      doublePage: false
-    }, options);
-
     this.canvas = document.createElement('canvas');
     this.context = this.canvas.getContext('2d');
   }
@@ -199,9 +200,20 @@ var Canvas = (function (_EventEmitter) {
   _createClass(Canvas, [{
     key: 'drawImage',
     value: function drawImage(page, page2) {
+      var opts = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
+
       this.emit('draw:start');
 
-      if (!(page instanceof window.Image) || this.options.doublePage && !(page2 instanceof window.Image)) {
+      if (!(page2 instanceof window.Image)) {
+        opts = page2;
+      }
+
+      var options = _Object$assign({
+        doublePage: false,
+        zoomMode: 'fitWidth'
+      }, opts);
+
+      if (!(page instanceof window.Image) || options.doublePage && !(page2 instanceof window.Image)) {
         throw new Error('Invalid image');
       }
 
@@ -210,7 +222,7 @@ var Canvas = (function (_EventEmitter) {
       var offsetH = 0;
       var width = page.width;
       var height = page.height;
-      var doublePageMode = this.options.doublePage;
+      var doublePageMode = options.doublePage;
       var canvasWidth = undefined;
       var canvasHeight = undefined;
       var pageWidth = undefined;
@@ -238,7 +250,7 @@ var Canvas = (function (_EventEmitter) {
       }
 
       // update the page this.scale if a non manual mode has been chosen
-      switch (this.options.zoomMode) {
+      switch (options.zoomMode) {
 
         case 'manual':
           document.body.style.overflowX = 'auto';
@@ -271,8 +283,8 @@ var Canvas = (function (_EventEmitter) {
       canvasWidth = page.width * zoomScale;
       canvasHeight = page.height * zoomScale;
 
-      pageWidth = this.options.zoomMode === 'manual' ? page.width * this.scale : canvasWidth;
-      pageHeight = this.options.zoomMode === 'manual' ? page.height * this.scale : canvasHeight;
+      pageWidth = options.zoomMode === 'manual' ? page.width * this.scale : canvasWidth;
+      pageHeight = options.zoomMode === 'manual' ? page.height * this.scale : canvasHeight;
 
       canvasHeight = pageHeight;
 
@@ -281,12 +293,12 @@ var Canvas = (function (_EventEmitter) {
       this.canvas.height = canvasHeight < window.innerHeight ? window.innerHeight : canvasHeight;
 
       // always keep pages centered
-      if (this.options.zoomMode === 'manual' || this.options.zoomMode === 'fitWindow') {
+      if (options.zoomMode === 'manual' || options.zoomMode === 'fitWindow') {
 
         // work out a horizontal position
         if (canvasWidth < windowWidth()) {
           offsetW = (windowWidth() - pageWidth) / 2;
-          if (this.options.doublePage) {
+          if (options.doublePage) {
             offsetW = offsetW - pageWidth / 2;
           }
         }
@@ -297,17 +309,9 @@ var Canvas = (function (_EventEmitter) {
         }
       }
 
-      // in manga double page mode reverse the page(s)
-      if (this.options.rtl && this.options.doublePage && typeof page2 === 'object') {
-        var tmpPage = page;
-        var tmpPage2 = page2;
-        page = tmpPage2;
-        page2 = tmpPage;
-      }
-
       // draw the page(s)
       this.context.drawImage(page, offsetW, offsetH, pageWidth, pageHeight);
-      if (this.options.doublePage && typeof page2 === 'object') {
+      if (options.doublePage && typeof page2 === 'object') {
         this.context.drawImage(page2, pageWidth + offsetW, offsetH, pageWidth, pageHeight);
       }
 

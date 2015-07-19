@@ -1,5 +1,5 @@
 let assert = require('assert')
-let spy = require('spy')
+let sinon = require('sinon')
 let ComicBook = require('../app/comic-book')
 let srcs = [
     'data:image/gif;base64,R0lGODlhAQABAPAAAKqqqv///yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==',
@@ -71,16 +71,16 @@ describe('ComicBook', () => {
     it('should update the progress bar', done => {
       let comic = new ComicBook(srcs)
 
-      comic.progressBar.update = spy()
+      comic.progressBar.update = sinon.spy()
       comic.preload()
 
       comic.on('preload:finish', () => {
         assert.equal(comic.progressBar.update.callCount, 5)
-        assert(comic.progressBar.update.calls[0].calledWith(20))
-        assert(comic.progressBar.update.calls[1].calledWith(40))
-        assert(comic.progressBar.update.calls[2].calledWith(60))
-        assert(comic.progressBar.update.calls[3].calledWith(80))
-        assert(comic.progressBar.update.calls[4].calledWith(100))
+        assert(comic.progressBar.update.getCall(0).calledWith(20))
+        assert(comic.progressBar.update.getCall(1).calledWith(40))
+        assert(comic.progressBar.update.getCall(2).calledWith(60))
+        assert(comic.progressBar.update.getCall(3).calledWith(80))
+        assert(comic.progressBar.update.getCall(4).calledWith(100))
         done()
       })
     })
@@ -106,24 +106,24 @@ describe('ComicBook', () => {
       it('should draw a given page', () => {
         let comic = new ComicBook(srcs)
 
-        comic.canvas.drawImage = spy()
+        comic.canvas.drawImage = sinon.spy()
 
         comic.drawPage(1)
 
         assert.equal(comic.canvas.drawImage.callCount, 1)
-        assert(comic.canvas.drawImage.calls[0].calledWith(comic.pages.get(1)))
+        assert(comic.canvas.drawImage.getCall(0).calledWith(comic.pages.get(1)))
       })
 
       it('should default to drawing the current page', () => {
         let comic = new ComicBook(srcs)
 
-        comic.canvas.drawImage = spy()
+        comic.canvas.drawImage = sinon.spy()
         comic.currentPageIndex = 2
 
         comic.drawPage()
 
         assert.equal(comic.canvas.drawImage.callCount, 1)
-        assert(comic.canvas.drawImage.calls[0].calledWith(comic.pages.get(2)))
+        assert(comic.canvas.drawImage.getCall(0).calledWith(comic.pages.get(2)))
       })
 
       it('should update the current page index after drawing', () => {
@@ -154,7 +154,37 @@ describe('ComicBook', () => {
         assert.throws(comic.drawPage.bind(comic))
       })
 
-      it('should draw two pages in double page mode')
+      it('should draw two pages in double page mode', done => {
+        let comic = new ComicBook(srcs, { doublePage: true })
+
+        comic.canvas.drawImage = sinon.spy()
+
+        comic.on('preload:finish', () => {
+          comic.drawPage(0)
+          assert(comic.canvas.drawImage.calledWith(comic.pages.get(0), comic.pages.get(1)))
+          done()
+        })
+
+        comic.preload()
+      })
+
+      it('should reverse page order in manga double page mode', done => {
+        let comic = new ComicBook(srcs, {
+          doublePage: true,
+          rtl: true
+        })
+
+        comic.canvas.drawImage = sinon.spy()
+
+        comic.on('preload:finish', () => {
+          comic.drawPage(0)
+          assert(comic.canvas.drawImage.calledWith(comic.pages.get(1), comic.pages.get(0)))
+          done()
+        })
+
+        comic.preload()
+      })
+
     })
 
     describe('drawNextPage()', () => {
@@ -162,12 +192,12 @@ describe('ComicBook', () => {
       it('should draw the next page', done => {
         let comic = new ComicBook(srcs)
 
-        comic.drawPage = spy()
+        comic.drawPage = sinon.spy()
         comic.currentPageIndex = 1
 
         comic.on('preload:finish', () => {
           comic.drawNextPage()
-          assert(comic.drawPage.calls[0].calledWith(2))
+          assert(comic.drawPage.getCall(0).calledWith(2))
           done()
         })
 
@@ -177,13 +207,13 @@ describe('ComicBook', () => {
       it('should draw the next page in double page mode', done => {
         let comic = new ComicBook(srcs)
 
-        comic.drawPage = spy()
+        comic.drawPage = sinon.spy()
         comic.currentPageIndex = 1
         comic.options.doublePage = true
 
         comic.on('preload:finish', () => {
           comic.drawNextPage()
-          assert(comic.drawPage.calls[0].calledWith(3))
+          assert(comic.drawPage.getCall(0).calledWith(3))
           done()
         })
 
@@ -193,13 +223,13 @@ describe('ComicBook', () => {
       it('should handle the final page of double page mode being a single page', done => {
         let comic = new ComicBook(srcs)
 
-        comic.drawPage = spy()
+        comic.drawPage = sinon.spy()
         comic.currentPageIndex = 3
         comic.options.doublePage = true
 
         comic.on('preload:finish', () => {
           comic.drawNextPage()
-          assert(comic.drawPage.calls[0].calledWith(4))
+          assert(comic.drawPage.getCall(0).calledWith(4))
           done()
         })
 
@@ -212,12 +242,12 @@ describe('ComicBook', () => {
       it('should draw the previous page', done => {
         let comic = new ComicBook(srcs)
 
-        comic.drawPage = spy()
+        comic.drawPage = sinon.spy()
         comic.currentPageIndex = 2
 
         comic.on('preload:finish', () => {
           comic.drawPreviousPage()
-          assert(comic.drawPage.calls[0].calledWith(1))
+          assert(comic.drawPage.getCall(0).calledWith(1))
           done()
         })
 
@@ -227,13 +257,13 @@ describe('ComicBook', () => {
       it('should draw the previous page in double page mode', done => {
         let comic = new ComicBook(srcs)
 
-        comic.drawPage = spy()
+        comic.drawPage = sinon.spy()
         comic.currentPageIndex = 3
         comic.options.doublePage = true
 
         comic.on('preload:finish', () => {
           comic.drawPreviousPage()
-          assert(comic.drawPage.calls[0].calledWith(1))
+          assert(comic.drawPage.getCall(0).calledWith(1))
           done()
         })
 
@@ -243,20 +273,18 @@ describe('ComicBook', () => {
       it('should handle navigating back to an uneven first page in double page mode', done => {
         let comic = new ComicBook(srcs)
 
-        comic.drawPage = spy()
+        comic.drawPage = sinon.spy()
         comic.currentPageIndex = 1
         comic.options.doublePage = true
 
         comic.on('preload:finish', () => {
           comic.drawPreviousPage()
-          assert(comic.drawPage.calls[0].calledWith(0))
+          assert(comic.drawPage.getCall(0).calledWith(0))
           done()
         })
 
         comic.preload()
       })
-
-      it('should reverse image order in double page manga mode')
     })
   })
 

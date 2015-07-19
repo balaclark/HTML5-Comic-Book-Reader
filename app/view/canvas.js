@@ -9,24 +9,23 @@ class Canvas extends EventEmitter {
 
   constructor (options) {
     super()
-
-    this.options = Object.assign({
-      // fitWidth, fitWindow, manua
-      zoomMode: 'fitWidth',
-      // manga mode
-      rtl: false,
-      // should two pages be rendered at a time?
-      doublePage: false
-    }, options)
-
     this.canvas = document.createElement('canvas')
     this.context = this.canvas.getContext('2d')
   }
 
-  drawImage (page, page2) {
+  drawImage (page, page2, opts = {}) {
     this.emit('draw:start')
 
-    if (!(page instanceof window.Image) || (this.options.doublePage && !(page2 instanceof window.Image))) {
+    if (!(page2 instanceof window.Image)) {
+      opts = page2
+    }
+
+    let options = Object.assign({
+      doublePage: false,
+      zoomMode: 'fitWidth'
+    }, opts)
+
+    if (!(page instanceof window.Image) || (options.doublePage && !(page2 instanceof window.Image))) {
       throw new Error('Invalid image')
     }
 
@@ -35,7 +34,7 @@ class Canvas extends EventEmitter {
     let offsetH = 0
     let width = page.width
     let height = page.height
-    let doublePageMode = this.options.doublePage
+    let doublePageMode = options.doublePage
     let canvasWidth
     let canvasHeight
     let pageWidth
@@ -66,7 +65,7 @@ class Canvas extends EventEmitter {
     }
 
     // update the page this.scale if a non manual mode has been chosen
-    switch (this.options.zoomMode) {
+    switch (options.zoomMode) {
 
     case 'manual':
       document.body.style.overflowX = 'auto'
@@ -101,8 +100,8 @@ class Canvas extends EventEmitter {
     canvasWidth = page.width * zoomScale
     canvasHeight = page.height * zoomScale
 
-    pageWidth = (this.options.zoomMode === 'manual') ? page.width * this.scale : canvasWidth
-    pageHeight = (this.options.zoomMode === 'manual') ? page.height * this.scale : canvasHeight
+    pageWidth = (options.zoomMode === 'manual') ? page.width * this.scale : canvasWidth
+    pageHeight = (options.zoomMode === 'manual') ? page.height * this.scale : canvasHeight
 
     canvasHeight = pageHeight
 
@@ -111,12 +110,12 @@ class Canvas extends EventEmitter {
     this.canvas.height = (canvasHeight < window.innerHeight) ? window.innerHeight : canvasHeight
 
     // always keep pages centered
-    if (this.options.zoomMode === 'manual' || this.options.zoomMode === 'fitWindow') {
+    if (options.zoomMode === 'manual' || options.zoomMode === 'fitWindow') {
 
       // work out a horizontal position
       if (canvasWidth < windowWidth()) {
         offsetW = (windowWidth() - pageWidth) / 2
-        if (this.options.doublePage) { offsetW = offsetW - pageWidth / 2 }
+        if (options.doublePage) { offsetW = offsetW - pageWidth / 2 }
       }
 
       // work out a vertical position
@@ -125,17 +124,9 @@ class Canvas extends EventEmitter {
       }
     }
 
-    // in manga double page mode reverse the page(s)
-    if (this.options.rtl && this.options.doublePage && typeof page2 === 'object') {
-      let tmpPage = page
-      let tmpPage2 = page2
-      page = tmpPage2
-      page2 = tmpPage
-    }
-
     // draw the page(s)
     this.context.drawImage(page, offsetW, offsetH, pageWidth, pageHeight)
-    if (this.options.doublePage && typeof page2 === 'object') {
+    if (options.doublePage && typeof page2 === 'object') {
       this.context.drawImage(page2, pageWidth + offsetW, offsetH, pageWidth, pageHeight)
     }
 
