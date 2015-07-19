@@ -63,7 +63,7 @@
     "uglify-js": "^2.4.23",
     "watchify": "http://registry.npmjs.org/watchify/-/watchify-3.2.3.tgz"
   },
-  "peerDependencies": {
+  "optionalDependencies": {
     "phantomjs": "^1.9.17"
   }
 }
