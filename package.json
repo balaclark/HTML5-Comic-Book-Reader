@@ -12,7 +12,8 @@
   "scripts": {
     "build": "npm run buildjs ; npm run buildcss",
     "buildcss": "rm -f dist/*.css && cat assets/fonts/icomoon-toolbar/style.css app/css/reset.css app/css/styles.css app/css/toolbar.css > dist/comicbook.css && cssmin dist/comicbook.css > dist/comicbook.min.css && cp -r app/css/img dist",
-    "buildjs": "rm -f dist/*.js && browserify --transform [ babelify --optional runtime ] --transform browserify-handlebars  app/index.js --debug | exorcist dist/comicbook.js.map > dist/comicbook.js && uglifyjs --screw-ie8 --compress --mangle --source-map dist/comicbook.min.js.map --source-map-root ./ --output dist/comicbook.min.js -- dist/comicbook.js",
+    "buildjs": "rm -f dist/*.js && browserify --transform [ babelify --optional runtime ] --transform browserify-handlebars app/index.js --debug | exorcist dist/comicbook.js.map > dist/comicbook.js && uglifyjs --screw-ie8 --compress --mangle --source-map dist/comicbook.min.js.map --source-map-root ./ --output dist/comicbook.min.js -- dist/comicbook.js",
+    "buildjs-watch": "rm -f dist/*.js && watchify --transform [ babelify --optional runtime ] --transform browserify-handlebars --verbose --outfile 'exorcist dist/comicbook.js.map > dist/comicbook.js && uglifyjs --screw-ie8 --compress --mangle --source-map dist/comicbook.min.js.map --source-map-root ./ --output dist/comicbook.min.js -- dist/comicbook.js'  app/index.js --debug",
     "pretest": "standard",
     "test": "mochify --recursive --reporter spec --transform [ babelify --optional runtime ] --transform browserify-handlebars",
     "test-watch": "mochify --watch --recursive --reporter min --transform [ babelify --optional runtime ] --transform browserify-handlebars"
