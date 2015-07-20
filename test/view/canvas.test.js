@@ -13,6 +13,9 @@ describe('Canvas', function () {
     assert.throws(canvas.drawImage, 'Invalid image')
 
     assert.throws(canvas.drawImage.bind(canvas, image, { doublePage: true }), 'Invalid image')
+    assert.throws(canvas.drawImage.bind(canvas, image, null, { doublePage: true, test: 'ing' }), 'Invalid image')
+    assert.doesNotThrow(canvas.drawImage.bind(canvas, image, undefined, { doublePage: true }), 'Invalid image',
+     'Allow "undefined image 2 as the last page in double page mode could be blank"')
     assert.doesNotThrow(canvas.drawImage.bind(canvas, image, image, { doublePage: true }), 'Invalid image')
   })
 

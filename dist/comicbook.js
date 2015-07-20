@@ -226,8 +226,8 @@ var Canvas = (function (_EventEmitter) {
 
       this.emit('draw:start');
 
-      if (!(page2 instanceof window.Image)) {
-        opts = page2;
+      if (page2 === null || !(page2 instanceof window.Image)) {
+        opts = page2 || opts;
       }
 
       var options = _Object$assign({
@@ -235,7 +235,7 @@ var Canvas = (function (_EventEmitter) {
         zoomMode: 'fitWidth'
       }, opts);
 
-      if (!(page instanceof window.Image) || options.doublePage && !(page2 instanceof window.Image)) {
+      if (!(page instanceof window.Image) || options.doublePage && page2 === null) {
         throw new Error('Invalid image');
       }
 
@@ -262,7 +262,7 @@ var Canvas = (function (_EventEmitter) {
       if (doublePageMode) {
 
         // for double page spreads, factor in the width of both pages
-        if (typeof page2 === 'object') {
+        if (page2 instanceof window.Image) {
           width += page2.width
           // if this is the last page and there is no page2, still keep the canvas wide
           ;
