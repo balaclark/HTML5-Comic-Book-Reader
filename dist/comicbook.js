@@ -123,7 +123,14 @@ var ComicBook = (function (_EventEmitter) {
       var args = [page];
 
       if (this.options.doublePage) {
-        args.push(this.pages.get(pageIndex + 1));
+        var page2Index = pageIndex + 1;
+        var page2 = this.pages.get(page2Index);
+
+        if (page2Index <= this.pages.size - 1 && !page2) {
+          return this.preload();
+        }
+
+        args.push(page2);
 
         if (this.options.rtl) {
           args.reverse();
