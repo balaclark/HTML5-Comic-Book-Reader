@@ -36,6 +36,7 @@ Contribute
 ----------
 
 Contributions are welcome, use the standard code style:
+
 [![js-standard-style](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://github.com/feross/standard)
 
 This project aims to have an absolute minimum of external dependencies (dev dependencies are more acceptable).
@@ -43,7 +44,7 @@ This project aims to have an absolute minimum of external dependencies (dev depe
 Copyright and License
 ---------------------
 
-Copyright 2010 Bala Clark
+Copyright 2010-2015 Bala Clark
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use
 this work except in compliance with the License. You may obtain a copy of the
