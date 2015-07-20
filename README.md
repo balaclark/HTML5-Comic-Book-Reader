@@ -2,6 +2,7 @@ Comic Book Reader
 =================
 
 [![Build Status](https://api.travis-ci.org/balaclark/HTML5-Comic-Book-Reader.png)](https://travis-ci.org/balaclark/HTML5-Comic-Book-Reader)
+[![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat)](https://github.com/feross/standard)
 
 A canvas based web application for reading comics. You can also see an implementation
 of this as an offline Chrome packaged application CBZ / CBR comic book reader at:
@@ -22,6 +23,22 @@ npm install
 npm run build
 npm test
 ```
+
+In order to run the test suite you will need phantomjs installed, if you don't
+have it already installed globally:
+
+```sh
+npm install phantomjs@1.9
+npm test
+```
+
+Contribute
+----------
+
+Contributions are welcome, use the standard code style:
+[![js-standard-style](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://github.com/feross/standard)
+
+This project aims to have an absolute minimum of external dependencies (dev dependencies are more acceptable).
 
 Copyright and License
 ---------------------
