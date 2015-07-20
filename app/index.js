@@ -15,7 +15,7 @@ let srcs = [
 ]
 let comic = window.comic = new ComicBook(srcs, { doublePage: true })
 
-comic.render()
+comic.render().drawPage(5)
 
 window.addEventListener('resize', debounce(comic.drawPage.bind(comic), 100))
 

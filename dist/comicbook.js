@@ -75,12 +75,26 @@ var ComicBook = (function (_EventEmitter) {
     }
   }, {
     key: 'preload',
-    value: function preload() {
+
+    // TODO use a queue, only allow x concurrent downloads at a time
+    // TODO preload in both directions
+    // TODO fire ready on forward direction only
+    value: function preload(startIndex) {
       var _this = this;
 
       this.emit('preload:start');
 
-      this.srcs.forEach(function (src, pageIndex) {
+      if (startIndex == null || startIndex >= this.srcs.length) {
+        startIndex = this.currentPageIndex;
+      }
+
+      // reorder srcs to start from the requested index
+      var _srcs = this.srcs.slice();
+      var srcs = _srcs.splice(startIndex).concat(_srcs);
+
+      this.currentPageIndex = startIndex;
+
+      srcs.forEach(function (src, pageIndex) {
 
         // allow preload to be run multiple times without duplicating requests
         if (_this.pages.has(pageIndex)) return;
@@ -118,7 +132,7 @@ var ComicBook = (function (_EventEmitter) {
       var page = this.pages.get(pageIndex);
 
       // if the requested image hasn't been loaded yet, force another preload run
-      if (!page) return this.preload();
+      if (!page) return this.preload(pageIndex);
 
       var args = [page];
 
@@ -127,7 +141,7 @@ var ComicBook = (function (_EventEmitter) {
         var page2 = this.pages.get(page2Index);
 
         if (page2Index <= this.pages.size - 1 && !page2) {
-          return this.preload();
+          return this.preload(page2Index);
         }
 
         args.push(page2);
@@ -180,7 +194,7 @@ var debounce = require('lodash.debounce');
 var srcs = ['https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_00.jpg', 'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_01.jpg', 'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_02.jpg', 'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_03.jpg', 'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_04.jpg', 'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_05.jpg', 'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_06.jpg', 'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_07.jpg', 'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_08.jpg', 'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_09.jpg', 'https://raw.githubusercontent.com/balaclark/HTML5-Comic-Book-Reader/master/examples/goldenboy/goldenboy_10.jpg'];
 var comic = window.comic = new ComicBook(srcs, { doublePage: true });
 
-comic.render();
+comic.render().drawPage(5);
 
 window.addEventListener('resize', debounce(comic.drawPage.bind(comic), 100));
 

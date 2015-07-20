@@ -51,10 +51,23 @@ class ComicBook extends EventEmitter {
     return this
   }
 
-  preload () {
+  // TODO use a queue, only allow x concurrent downloads at a time
+  // TODO preload in both directions
+  // TODO fire ready on forward direction only
+  preload (startIndex) {
     this.emit('preload:start')
 
-    this.srcs.forEach((src, pageIndex) => {
+    if (startIndex == null || startIndex >= this.srcs.length) {
+      startIndex = this.currentPageIndex
+    }
+
+    // reorder srcs to start from the requested index
+    let _srcs = this.srcs.slice()
+    let srcs = _srcs.splice(startIndex).concat(_srcs)
+
+    this.currentPageIndex = startIndex
+
+    srcs.forEach((src, pageIndex) => {
 
       // allow preload to be run multiple times without duplicating requests
       if (this.pages.has(pageIndex)) return
@@ -90,7 +103,7 @@ class ComicBook extends EventEmitter {
     let page = this.pages.get(pageIndex)
 
     // if the requested image hasn't been loaded yet, force another preload run
-    if (!page) return this.preload()
+    if (!page) return this.preload(pageIndex)
 
     let args = [ page ]
 
@@ -99,7 +112,7 @@ class ComicBook extends EventEmitter {
       let page2 = this.pages.get(page2Index)
 
       if (page2Index <= (this.pages.size - 1) && !page2) {
-        return this.preload()
+        return this.preload(page2Index)
       }
 
       args.push(page2)

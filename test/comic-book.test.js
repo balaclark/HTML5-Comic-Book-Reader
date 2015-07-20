@@ -52,8 +52,6 @@ describe('ComicBook', () => {
       comic.preload()
     })
 
-    it('preload:ready should make sure that double page mode can show two images')
-
     it('should show the load indicator on preload:start', done => {
       let comic = new ComicBook(srcs)
       assert.equal(comic.loadIndicator.el.style.display, 'none')
@@ -101,7 +99,7 @@ describe('ComicBook', () => {
       let comic = new ComicBook(srcs)
       let loaded = 0
 
-      comic.on('preload:image', (image) => loaded++)
+      comic.on('preload:image', image => loaded++)
       comic.on('preload:finish', () => {
         assert.equal(loaded, srcs.length)
         done()
@@ -112,7 +110,19 @@ describe('ComicBook', () => {
       comic.preload()
     })
 
-    it('should restart the preload from whatever page is requested')
+    it('should restart the preload from whatever page is requested', done => {
+      let comic = new ComicBook(srcs)
+      let loaded = []
+
+      comic.on('preload:image', image => loaded.push(srcs.indexOf(image.src)))
+
+      comic.on('preload:finish', () => {
+        assert.deepEqual(loaded, [ 2, 3, 4, 0, 1 ])
+        done()
+      })
+
+      comic.preload(2)
+    })
   })
 
   describe('draw', () => {
