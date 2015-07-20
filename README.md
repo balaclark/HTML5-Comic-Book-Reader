@@ -35,11 +35,18 @@ npm test
 Contribute
 ----------
 
-Contributions are welcome, use the standard code style:
+Contributions are welcome, use the standard code style and [ES6](https://github.com/lukehoban/es6features#readme). Code is split into modules using browserify.
 
 [![js-standard-style](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://github.com/feross/standard)
 
 This project aims to have an absolute minimum of external dependencies (dev dependencies are more acceptable).
+
+To auto build js and auto run tests use the following commands in seperate terminals.
+
+```sh
+npm run buildjs-watch
+npm run test-watch
+```
 
 Copyright and License
 ---------------------
